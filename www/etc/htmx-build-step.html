@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<title>Why HTMX Doesn't Have a Build Step</title>
+
+<h1>Why HTMX Doesn't Have a Build Step</h1>
+
+<p>A recurring question from some htmx contributors—and prospective
+contributes—is why htmx isn’t written in TypeScript. Or, for that
+matter, why htmx lacks any build step, modularization, or even static
+code checking. The full htmx source is a single 3,500-line
+<code>.js</code> file—if you want to contribute to htmx, you do so by
+modifying the that file, the same file that gets sent to
+browsers in production, give or take minification and compression.</p>
+
+<p>I do not speak for the htmx project, but I have made a few nontrivial
+contributions to it, and have been a vocal advocate for retaining this
+no-build setup every time the issue has arisen. From my perspective,
+here’s why htmx does not have a build step.</p>
+
+<h2 id="benefits">Benefits</h2>
+<h3 id="write-once-run-forever">write once, run forever</h3>
+
+<p>The best reason to write plain JavaScript is that it lasts forever.
+This is, in my opinion, JavaScript’s single most underrated feature.
+While I’m sure there are some corner cases, JavaScript from 1999 that
+ran in Netscape Navigator will run unaltered, alongside modern code, in
+Google Chrome downloaded yesterday. That is true for very few
+programming environments. It’s certainly not true for Python, or Java,
+or C, which all have versioning mechanisms where opting for new language
+features will force you off of deprecated APIs.</p>
+
+<p>Of course, most people’s experience with JavaScript is that is ages
+like than milk. Reopen a node repository after 3 months and you’ll find
+that your project is mired in a flurry of security warnings,
+backwards-incompatible library “upgrades,” and a frontend framework
+whose cultural peak was the exact moment you started the project and is
+now widely considered tech debt. Who’s to blame for this situation is
+for someone else to decide, but the fact is incontrovertible that this
+problem is removed if you use no dependencies whatsoever (other than the
+JavaScript runtime). And compilers are a dependency.</p>
+
+<p>A popular way to write write JavaScript today is compile it from
+TypeScript (which I will use frequently as an example, because
+TypeScript is probably the <a
+href="https://en.wikipedia.org/wiki/Straw_man#Steelmanning">best
+reason</a> to use a build system). TypeScript does not run natively in
+web browsers, so TypeScript code is not protected by ECMA’s fanatical
+devotion to backwards compatibility. Like any dependency, new major
+versions are not guaranteed to be backwards compatible with the previous
+ones. They might be! But if they aren’t, then you need to do maintenance
+if you want to use the modern development toolchain.</p>
+
+<p>Maintenance is a cost paid for with labor, and open-source projects
+are the ones that can least afford to pay it. Opting not to use a build
+step drastically minimizes the labor required to keep htmx up-to-date.
+This experience has been borne out by intercooler.js, the predecessor to
+htmx from the same author which is actively maintained with (as I
+understand) very little effort. When htmx 1.0 was released, TypeScript
+was at version 4.1; when intercooler.js was released, TypeScript was
+pre-1.0. Would code written in those TypeScript versions compile
+unmodified in today’s TypeScript compiler (version 5.1 at the time of
+writing)? Maybe, maybe not.</p>
+
+<p>But htmx is written in JavaScript, with no dependencies, so it will run
+unmodified for as long as web browsers remain relevant. Let the browser
+vendors do the hard work for you.</p>
+
+<h3 id="developer-experience">developer experience</h3>
+
+<p>It is true that the TypeScript developer experience (DX) is better
+than the JavaScript developer experience in some respects. TypeScript
+has… types, which make your IDE better at suggesting code and pointing
+out where you might have used methods incorrectly. The tools for
+automatically renaming, refactoring, and generally munging your code are
+much more reliable for TypeScript than they are for JavaScript. For this
+reason, TypeScript is a very popular way to write code for JavaScript
+runtimes.</p>
+
+<p>It is not true that the TypeScript DX is better in <em>every</em>
+
+respect, and the tendency of software engineers to view progress as a
+teleology of capability rather than a set of tradeoffs sometimes blinds
+them to the cost paid for the DX aspects they like. For instance, a
+small tradeoff you make for using TypeScript is that compiling it takes
+time, and you have to wait for it to recompile to test a change. Usually
+this cost is negligible, and well worth paying, but it is nonetheless a
+cost.</p>
+
+<p>A more significant cost for using TypeScript is that the code running
+in the browser is not the code you wrote, which makes all the browser’s
+tools harder to use. If your code throws an exception, you have to
+figure out how the stack trace (with its JavaScript line numbers,
+JavaScript function signatures, and so forth) maps to the TypeScript
+code that you wrote; if you write JavaScript, you can click straight
+through to the source code, read the thing you wrote, and set a
+breakpoint in the debugger. This is <em>tremendous</em> DX. It lowers to
+barrier to using all the incredibly powerful debugging tools that are
+built into browser. For a lot of younger web developers who have never
+worked this way, it is a revelatory experience.</p>
+
+<p>Build step advocates point out that TypeScript can generate <a
+href="https://firefox-source-docs.mozilla.org/devtools-user/debugger/how_to/use_a_source_map/index.html">source
+maps</a>, which tell your browser what TypeScript corresponds to what
+JavaScript, and that’s true! But now you have <em>another</em> thing to
+keep track of—the TypeScript you wrote, the JavaScript it generated, and
+the source map that connects these two. The hot-reloading development
+server you’re now dependent on will keep these up to date for you in
+development mode, and make sure you browser is aware of them—but what
+about on your staging server? What about in production? Bugs that appear
+in these environments will be harder to track down, because you’ve lost
+a lot of information about where they come from. These are solvable
+problems, but they’re problems you created; they are a cost.</p>
+
+<p>The htmx DX is very simple—your browser loads a single file, which in
+every environment is the exact same file you wrote. The tradeoffs
+required to maintain that experience are real, but they’re tradeoffs
+that make sense for this project.</p>
+
+<h3 id="enforced-clarity">enforced clarity</h3>
+
+<p>Modularization is one of the <a
+href="https://legacy.python.org/dev/peps/pep-0020/">honking great
+ideas</a> of software. Modules make it possible to solve incredibly
+complex problems by breaking down code into well-contained substructures
+that solve smaller problems. Modules are really useful.</p>
+
+<p>Sometimes, however, you want to solve simple problems, or at least
+relatively simple problems. In those cases, it can be helpful
+<em>not</em> to use the building blocks of more complex software, lest
+you rebuild their complexity without creating comensurate value. At its
+core, htmx solves a relatively simple problem: we’re adding a handful of
+attributes to HTML that make it easier to replace DOM elements using the
+declarative character of hypertext. Requiring that all the htmx code
+remain in a single file (again, around 3,500 lines of code) enforces a
+degree of intention on the library; there is a real pressure when
+working on the htmx source to justify the addition new lines of code, a
+pressure which enforces a degree of simplicity.</p>
+
+<p>While the DX tradeoffs are obvious, there are also surprising DX
+benefits. If you search a function name in the source file, you’ll
+instantly find all the uses of that function (this also mitigates the
+need for more-advanced code introspection). The lack of places for
+functionality to hide makes working on htmx a lot more approachable.
+Far, far more complex projects use aspects of this approach as well:
+SQLite3 compiles from a <a
+href="https://www.sqlite.org/amalgamation.html">single-file source
+amalgamation</a> (though they use separate files for development,
+they’re not <em>crazy</em>) which makes hacking on it <a
+href="https://jvns.ca/blog/2019/10/28/sqlite-is-really-easy-to-compile/">significantly
+easier</a>. You could never build the linux kernel this way—but we’re
+not building the linux kernel.</p>
+
+<h1 id="costs">Costs</h1>
+
+<h3 id="no-static-types">No static types</h3>
+
+<p><a href="https://grugbrain.dev/#grug-on-type-systems">The htmx
+project is not anti-static typing!</a> It does have to be written in
+JavaScript, though, because browsers run JavaScript. And <a
+href="https://github.com/tc39/proposal-type-annotations">as long as
+JavaScript is dynamically typed</a>, the tradeoffs required to get true
+static typing in the htmx source (htmx <em>users</em> can of course take
+advantage of the types we declare with <code>.d.ts</code> files) are not
+worth it.</p>
+
+<p>We are exploring the possibility of using JSDoc to get some of the
+same guarantees without the build step. Other libraries, like <a
+href="https://github.com/sveltejs/svelte/pull/8569">Svelte</a>, have
+been trending in this direction as well, in part due to the <a
+href="https://news.ycombinator.com/item?id=35892250">debugging
+friction</a> that TypeScript files introduce.</p>
+
+<h3 id="no-es6">No ES6</h3>
+
+<p>We maintain support for Internet Explorer 11, and because we do not
+have a build step, every line of htmx has to be written in
+IE11-compatible JavaScript, which means no ES6. When people like me say
+that JavaScript is pretty good now, they are usually referring to
+language features like <code>async/await</code>, anonymous functions,
+and functional array methods (i.e. <code>.map</code>,
+<code>.forEach</code>) that were introduced with ES6—none of which can
+be used in the htmx source.</p>
+
+<p>While this is incredibly annoying, from a practical standpoint, it’s
+not a huge impediment for development. The lack of some nice language
+features doesn’t prevent us from writing code with functional paradigms.
+Would it be nice not to write our own <a
+href="https://github.com/bigskysoftware/htmx/blob/b4a61c543b283eb2315a47708006783efb78f563/src/htmx.js#L375-L381">forEach
+method</a>? Of course. But until all the browsers we target support ES6,
+we can make do by supplementing ES5 with a few helper functions. If you
+are used to ES6, you will automatically write better ES5.</p>
+
+<p>IE11 support is going to be dropped in htmx 2.0, and we’ll be able to
+use ES6 for development.</p>
+
+<h3 id="no-modules-in-core">No modules in core</h3>
+
+<p>This point is obvious, but it’s worth re-stating: the htmx source
+would be a lot tidier if we could split it into modules. <a
+href="https://www.steveonstuff.com/2022/01/27/no-such-thing-as-clean-code">There
+are other factors that go into code quality besides tidiness</a>, but to
+the extent that the htmx source is high-quality, it is not because it is
+tidy.</p>
+
+<p>This some things we want to do with htmx very difficult. The <a
+href="https://github.com/bigskysoftware/idiomorph">idiomorph
+algorithm</a> is going to included in the htmx 2.0 core, but we’d like
+to be able to maintain it as a separate package so that people can use
+the DOM-morphing algorithm without using htmx. If the core could include
+multiple files, we could easily do with any number of mirroring schemes,
+such as git submodules. But we cannot, because the core is a single
+file, so the idiomorph code will have to live there as well. That’s a
+problem we created for ourselves too.</p>
+
