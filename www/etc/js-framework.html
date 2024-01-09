@@ -1,0 +1,138 @@
+<p>One objection people raise when they first hear about htmx is the
+following:</p>
+<blockquote>
+<p>You’re complaining about the complexity of modern frontend
+frameworks, but your solution is just another complex frontend
+framework.</p>
+</blockquote>
+<p>This is an excellent objection! It’s the right to question to ask
+about <em>any</em> third-party (3P) code that you introduce into your
+project. Even though you aren’t writing the 3P code yourself, by
+including it in your project you are committing to
+<em>understanding</em> it for as long as you rely on it—and that
+understanding will have to be updated if you upgrade it. That’s a big
+commitment.</p>
+<p>Let’s break this question down into its constituent parts, and
+determine exactly how much htmx indulges in the harms it claims to
+solve. ## The difference between a library and a framework</p>
+<p>Some htmx defenders jump to our aid with: “htmx isn’t a framework,
+it’s a library.” This is probably incorrect.</p>
+<p>“Framework” is a colloquial term—there’s no hard rule for the point
+at which some third-party code evolves from a “library” into a
+“framework”—but we should still try to define it. In this context:</p>
+<ul>
+<li><strong>Library</strong> - 3P code whose API does not significantly
+influence the rest of the application</li>
+<li><strong>Framework</strong> - 3P code whose API dictates the overall
+structure of the application</li>
+</ul>
+<p>If you prefer metaphors: a library is a cog that you add to your
+machine, a framework is a pre-built machine that you control by
+customizing its cogs.</p>
+<p>This distinction, fuzzy though it may be, is important because it
+describes how easily some third-party code can be replaced. For example,
+a JavaScript service that uses a CSV parsing library can probably swap
+in a different CSV parsing library without too much trouble; a
+JavaScript service that uses the NextJS framework, however, is probably
+going to depend on NextJS for its entire useful life, since an enormous
+chunk of the code assumes that it’s interacting with NextJS
+constructs.</p>
+<p>Therefore, if your service is built atop a framework, you have agreed
+to tie the useful lifespan of your project to the useful lifespan of
+that framework. If that framework is abandoned, or hated, or otherwise
+undesirable to work on, the difficulty of modifying your project will
+steadily increase until you give up modifying it, and eventually,
+mothball it altogether.</p>
+<p>That’s what people are worried about when they ask is “is htmx just
+another JavaScript framework?” They want to be sure that they’re not
+committing to a system that will be quickly made obsolete, like so many
+of the past web development frameworks.</p>
+<p>So: is htmx a framework? And is it going to be made quickly obsolete,
+leaving a trail of un-maintainable websites in the wake of its meteoric
+demise? ## htmx is a framework</p>
+<p>With apologies to our discord channel dedicated to debating this
+question—I think htmx is pretty clearly a framework, at least in the
+majority use-case.</p>
+<p>When you use htmx, you’re committed to including htmx attributes in
+your HTML (i.e. <code>hx-post</code>, <code>hx-target</code>), writing
+endpoints that are called with htmx-formatted data (with certain request
+headers, in particular), and returning data from those endpoints that is
+formatted in ways that htmx expects (HTML with <code>hx-*</code>
+controls). This is framework-like behavior. The inclusion of htmx in
+your application has significant implications for the project’s
+structure, across all aspects of the codebase. It cannot be trivially
+replaced.</p>
+<p>You can definitely use htmx in a library-like manner, to add dynamic
+functionality to just a few sections of your web page. But you can write
+<a href="https://www.patterns.dev/vanilla/islands-architecture">React in
+this library-like manner too</a> and nobody says that React isn’t a
+framework. The vast majority of people writing their applications in
+htmx are doing so in a way that bends to the demands of htmx, as a
+framework for building hypermedia applications. As they should!</p>
+<p>Building with htmx works a lot better if you play to its strengths.
+You can send JSON-formatted form bodies, if you <a
+href="https://htmx.org/extensions/json-enc/">really insist</a>. But you
+shouldn’t! It’s simpler to just use
+<code>application/x-www-form-urlencoded</code> bodies, and write an
+endpoint that accepts them. You can write an endpoint that is re-used
+across multiple different clients. <a
+href="https://htmx.org/essays/why-tend-not-to-use-content-negotiation/">But
+you shouldn’t!</a> It’s simpler to split your <a
+href="https://htmx.org/essays/splitting-your-apis/">data and your
+hypermedia APIs</a> into separate URLs. Let htmx be a framework. It’s
+fine.</p>
+<p>That does not mean, however, that htmx is Just Another JavaScript
+Framework, because htmx has a huge advantage that the other frameworks
+do not: HTML.</p>
+<h2 id="htmx-is-not-really-a-javascript-framework">htmx is not (really)
+a JavaScript framework</h2>
+<p>Htmx may be a framework, but it is a <em>JavaScript</em> framework?
+In one obvious sense, yes: htmx is implemented with ~4k lines of
+JavaScript. But in another, arguably more important sense, it is not:
+React, Svelte, Solid, and so on have you write JS(X) that the framework
+converts into HTML; htmx just has you write HTML.</p>
+<p>More accurately, htmx might be a JavaScript framework, but it is
+definitely not a JSX framework.</p>
+<p>Browsers render HTML, so no compiler or transpiler is ever necessary
+to work with htmx. This is not true for the other aforementioned
+frameworks—JSX is <a
+href="https://react.dev/learn/writing-markup-with-jsx">JavaScript syntax
+extension</a>, so it requires JavaScript (on the backend) to work. While
+many htmx users happily render it with JSX, htmx works very well with <a
+href="https://jinja.palletsprojects.com">classic</a> <a
+href="https://ejs.co/">template</a> <a
+href="https://docs.ruby-lang.org/en/2.3.0/ERB.html">engines</a>, making
+it portable to <a
+href="https://htmx.org/essays/hypermedia-on-whatever-youd-like/">whatever
+language you like</a>. Say what you will about Django and Rails, but
+they were relevant in 2008 and they’re relevant today—htmx integrates
+seamlessly with them both.</p>
+<p>Moreover, because htmx itself is a <a
+href="https://htmx.org/essays/no-build-step/">zero-dependency,
+client-loaded JavaScipt file</a>, it is guaranteed to never conflict
+with whatever build process or dependency chain your server
+<em>does</em> depend on. Both the code you write with htmx, and htmx
+itself, take full advantage of the web’s <a
+href="https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/The_web_and_web_standards#dont_break_the_web">excellent
+backwards compatibility guarantees</a>. In this respect, it is much more
+like JQuery (its predecessor, <a
+href="https://intercoolerjs.org/">intercooler.js</a>, was a JQuery
+extension).</p>
+<p>Finally, because htmx merely extends HTML, most htmx defaults are
+just plain HTML defaults. Depending on when you wrote your React
+application, you might have written your form with <a
+href="https://legacy.reactjs.org/docs/forms.html">controlled class
+components</a>, or <a
+href="https://blog.logrocket.com/react-hook-form-complete-guide/">react
+hooks</a>, or this <a
+href="https://react.dev/reference/react-dom/components/form">experimental
+<code>&lt;form&gt;</code> extension</a>. No matter when you write your
+htmx application, a form will always be just a
+<code>&lt;form&gt;</code>, and by default it will send data in the same
+format that standard HTML forms do.</p>
+<p>In short, while htmx is probably a framework, it’s a framework that
+deviates far less from the web’s semantics than the JavaScript
+frameworks do. It’s an extension to HTML, not a compiler for it. If you
+want to build a website that lasts for a long time, with minimal
+maintenance, these qualities make htmx a better bet than many of its
+contemporaries.</p>
