@@ -10,10 +10,9 @@ framework.</p>
 <p>This is an excellent objection! It’s the right to question to ask
 about <em>any</em> third-party (3P) code that you introduce into your
 project. Even though you aren’t writing the 3P code yourself, by
-including it in your project you are committing to
-<em>understanding</em> it for as long as you rely on it—and that
-understanding will have to be updated if you upgrade it. That’s a big
-commitment.</p>
+including it in your project you are committing to understanding it for
+as long as you rely on it—and that understanding will have to be updated
+if you upgrade it. That’s a big commitment.</p>
 <p>Let’s break this question down into its constituent parts, and
 determine exactly how much htmx indulges in the harms it claims to
 solve.</p>
@@ -39,8 +38,8 @@ a JavaScript service that uses a CSV parsing library can probably swap
 in a different CSV parsing library without too much trouble; a
 JavaScript service that uses the NextJS framework, however, is probably
 going to depend on NextJS for its entire useful life, since an enormous
-chunk of the code assumes that it’s interacting with NextJS
-constructs.</p>
+chunk of the code is written with the assumption that it is interacting
+with NextJS constructs.</p>
 <p>Therefore, if your service is built atop a framework, you have agreed
 to tie the useful lifespan of your project to the useful lifespan of
 that framework. If that framework is abandoned, or hated, or otherwise
@@ -57,7 +56,7 @@ demise?</p>
 <h2 id="htmx-is-usually-a-framework">htmx is (usually) a framework</h2>
 <p>With apologies to our discord channel dedicated to debating this
 question—I think htmx is pretty clearly a framework, at least in the
-majority use-case.</p>
+majority use-case. But it does depend on how you use it.</p>
 <p>Wherever you make use of htmx in your project, you’re including htmx
 attributes in your HTML (i.e. <code>hx-post</code>,
 <code>hx-target</code>), writing endpoints that are called with
@@ -87,9 +86,9 @@ shouldn’t! It’s simpler to just use
 endpoint that accepts them. You can write an endpoint that is re-used
 across multiple different clients. <a
 href="https://htmx.org/essays/why-tend-not-to-use-content-negotiation/">But
-you shouldn’t!</a> It’s simpler to split your <a
-href="https://htmx.org/essays/splitting-your-apis/">data and your
-hypermedia APIs</a> into separate URLs. Yes, htmx can be used as a
+you shouldn’t!</a> It’s simpler to <a
+href="https://htmx.org/essays/splitting-your-apis/">split your data and
+your hypermedia APIs into separate URLs</a> . Yes, htmx can be used as a
 library, but let it be your framework. It’ll be fine.</p>
 <p>That does not mean, however, that htmx is Just Another JavaScript
 Framework, because htmx has a huge advantage that the other frameworks
@@ -128,8 +127,8 @@ language you like</a>. Say what you will about Django and Rails, but
 they were relevant in 2008 and they’re relevant today—htmx integrates
 seamlessly with them both. This is a recurring theme with htmx-driven
 development: htmx works well with development tools old and new, because
-the common denominator in all these tools is HTML, and htmx encourages
-you to write HTML.</p>
+the common denominator in all these tools is HTML, and htmx is for
+writing HTML.</p>
 <p>Pushing the user to define the behavior of their application
 primarily in HTML, rather than JS, has too many advantages to cover in
 this essay, so I’ll stick the ones that are most relevant to what people
@@ -143,14 +142,13 @@ href="https://react.dev/reference/react-dom/components/form">experimental
 <code>&lt;form&gt;</code> extension</a>. This is genuinely maddening,
 especially if you—like me—first learned how to make a web form with
 class components.</p>
-<p>No matter when you wrote your htmx application, however, a form has
-always been just a <code>&lt;form&gt;</code>, and it’s always sent data
-in the same format that regular HTML forms do. With htmx, you can
-finally use <code>PUT</code> requests in your form, and control where
-the response goes, but you are fundamentally doing something extremely
-to the default <code>&lt;form&gt;</code> element. This is a much less
-alienating way to learn web development, because the bulk of your
-knowledge will remain relevant as long as HTML does.</p>
+<p>No matter when you wrote your htmx application, however, the behavior
+of an htmx form has always been defined in largely the same way a
+regular HTML form is: with <code>&lt;form&gt;</code>. With htmx adding
+additional network functionality, you can finally use <code>PUT</code>
+requests and control where the response goes, but in all other
+respects—validation, inputs, labels, autocomplete—you have default
+<code>&lt;form&gt;</code> element behavior.</p>
 <p>Finally, because htmx simply extends HTML in a very narrow domain
 (network requests and DOM replacements), most of the “htmx” you write is
 just plain old HTML. When you have access to complex state management
@@ -158,7 +156,29 @@ mechanisms, it’s incredibly easy to implement a custom collapsable div;
 when you don’t, you might stop long enough to search up the <a
 href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details"><code>&lt;details&gt;</code></a>
 element. Whenever a problem can be solved by native HTML elements, the
-longevity of the code you wrote improves tremendously as a result.</p>
+longevity of the code you wrote improves tremendously as a result. This
+is a much less alienating way to learn web development, because the bulk
+of your knowledge will remain relevant as long as HTML does.</p>
+<p>%% In this respect, htmx is much more like JQuery than React (htmx’s
+predecessor, <a href="https://intercoolerjs.org/">intercooler.js</a>,
+was a JQuery extension), but it improves on JQuery by using a
+declarative, HTML-based interface: where JQuery made you go to the
+<code>&lt;script&gt;</code> tag to specify AJAX behavior, htmx requires
+only a simple <code>hx-post</code> attribute.</p>
+<p>Both the code you write with htmx and htmx itself take full advantage
+of the web’s <a
+href="https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/The_web_and_web_standards#dont_break_the_web">excellent
+backwards compatibility guarantees</a>.</p>
+<p>Carson has been <a
+href="https://intercoolerjs.org/2016/05/08/hatoeas-is-for-humans.html">trying
+for 7 years</a> to get people to understand that HTML is
+self-describing</p>
+<p>Much like a framework, htmx is prescriptive about the kind of data
+your API returns.</p>
+<p>This is not true for the other aforementioned frameworks—JSX is <a
+href="https://react.dev/learn/writing-markup-with-jsx">JavaScript syntax
+extension</a>, so it requires JavaScript (on the backend) to work.
+%%</p>
 <p>In short, while htmx is probably a framework, it’s a framework that
 <a
 href="https://unplannedobsolescence.com/blog/custom-html-has-levels/#custom-attributes-fill-the-semantic-deviation-gap">deviates
