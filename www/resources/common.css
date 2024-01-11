@@ -1,0 +1,47 @@
+body {
+  font-family: Verdana;
+  background-color: #EEEEEE;
+  padding: 0 20px;
+  max-width: 800px;
+  margin: 40px auto;
+}
+
+h1 { font-size: 3rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+
+h1, h2, h3 {
+  font-family: "courier"
+}
+
+a, a:visited {
+  color: #1B6F1B;
+}
+
+dl {
+  display: grid;
+  max-width: 300px;
+}
+
+dt { grid-column: 1; }
+
+dd { grid-column: 2; }
+
+figure {
+  margin: 0;
+}
+section {
+  display: block;
+  clear: both;
+}
+
+figure img {
+  display: block;
+  margin: 0 auto;
+  height: auto;
+  max-width: 100%;
+}
+
+#hero-image {
+  float: right;
+}
