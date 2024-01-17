@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<title>Complete Works - Alex Petros</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/resources/common.css">
+
+<style>
+#works { display: block; white-space: pre; background-color: lightgray; }
+
+cite { font-style: normal; display: block; margin: .5rem 0; }
+cite > .pub { font-style: italic; }
+</style>
+
+<main>
+
+<h1>Alex Petros Complete* Works</h1>
+<p>*It sort of depends how you define "works"</p>
+
+<section id=cites-wrapper>
+<h2>Reverse Chronological List</h2>
+</section>
+
+<div id=works-json-wrapper>
+<p>
+If you're seeing this, it's because you have JavaScript disabled (or you're in View Source).
+That's fine! I just use JS to convert this into a pretty list of citations.
+Enjoy the JSON version.
+
+</p>
+<script type="application/json" id=works-json>
+[
+  {
+      "type": "article",
+      "title": "Is htmx Just Another JavaScript Framework?",
+      "publication": "htmx.org",
+      "author": "Petros, Alexander",
+      "date": "2024-01-10",
+      "url": "https://htmx.org/essays/is-htmx-another-javascript-framework/"
+  },
+  {
+      "type": "article",
+      "title": "Custom HTML Has Levels To It",
+      "publication": "Unplanned Obsolesence",
+      "author": "Petros, Alexander",
+      "date": "2023-12-31",
+      "url": "https://unplannedobsolescence.com/blog/custom-html-has-levels/"
+  },
+  {
+      "type": "article",
+      "title": "Behavior Belongs in the HTML",
+      "publication": "Unplanned Obsolesence",
+      "author": "Petros, Alexander",
+      "url": "https://unplannedobsolescence.com/blog/behavior-belongs-in-html/",
+      "date": "2023-12-11"
+  },
+  {
+      "type": "project",
+      "title": "TestIgnore",
+      "publication": "We Make Internet",
+      "author": "We Make Internet",
+      "date": "2023-11-16",
+      "url": "https://htmx.org/essays/no-build-step/"
+  },
+  {
+      "type": "project",
+      "title": "Non-Deterministic Model With a Gun",
+      "publication": "We Make Internet",
+      "author": "We Make Internet",
+      "date": "2023-04-30",
+      "url": "https://github.com/alexpetros/nondeterministic-model-with-a-gun/"
+  },
+  {
+      "type": "project",
+      "title": "Are You The Asshole?",
+      "publication": "We Make Internet",
+      "author": "We Make Internet",
+      "date": "2022-04-20",
+      "url": "https://areyoutheasshole.com/"
+  },
+  {
+      "type": "project",
+      "title": "Super Fungible Token",
+      "publication": "We Make Internet",
+      "author": "We Make Internet",
+      "date": "",
+      "url": "https://wemakeinter.net/superfungibletoken/"
+  }
+]
+</script>
+</div>
+
+<script>
+  const worksScript = document.querySelector('#works-json')
+  const worksDisplay = document.querySelector('#works-json-wrapper')
+  const citesWrapper = document.querySelector('#cites-wrapper')
+
+  // Hide the JSON if the user's browser has JS enabled
+  worksDisplay.style.display = 'none'
+
+  // Turn the JSON into cite elements
+  const works = JSON.parse(worksScript.textContent)
+  console.log(works)
+  const citationElements = works.map(makeCitation)
+  citesWrapper.append.apply(citesWrapper, citationElements)
+
+  function makeCitation (work) {
+    switch(work.type) {
+      case 'article': return makeArticle(work)
+      case 'project': return makeArticle(work)
+      default: throw new Error('Invalid work type provided')
+    }
+  }
+
+  function makeArticle (work) {
+    const cite = document.createElement('cite')
+    const innerHTML = `
+     ${work.author}. “${work.title}”, <span class=pub>${work.publication}</span>, ${work.date}
+    `
+    cite.innerHTML = innerHTML
+    return cite
+  }
+</script>
