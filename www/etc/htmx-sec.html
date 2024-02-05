@@ -350,7 +350,7 @@ pulls a fast one and returns HTML instead of JSON,
 that is formatted as HTML, so you have to be careful to insert that
 properly.</p>
 <div class="sourceCode" id="cb12"><pre
-class="sourceCode json"><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;script&gt;alert(&#39;Hahaha I&#39;m a script&#39;)&lt;/script&gt;}</span></span></code></pre></div>
+class="sourceCode json"><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;script&gt;alert(&#39;Hahaha I am a script&#39;)&lt;/script&gt;&quot;</span> <span class="fu">}</span></span></code></pre></div>
 <p>So don’t insert the result of a JSON parse as HTML either—use
 <code>innerText</code> if you’re doing something like that. This is well
 outside the realm of htmx-controlled UI though.</p>
