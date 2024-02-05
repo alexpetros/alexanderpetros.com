@@ -12,16 +12,17 @@ frameworks—like React and Svelte—where the prevalence of JSX means you
 never write HTML directly.</p>
 <p>But have no fear! Writing secure htmx applications with HTML
 templates is a slightly different security model, but it’s no harder
-than securing a JSX-based application. And because htmx is a very small
-addition to the browser’s hypermedia controls, it allows you to take
-advantage of the browser’s great built-in security features in ways that
-are difficult to do when your application requires a lot of
-JavaScript.</p>
+than securing a JSX-based application, and in some ways it’s a lot
+easier.</p>
 <h2 id="who-is-this-for">Who is this for?</h2>
-<p>This guide is for you if you who understands the basics of web
-development and are interested in htmx. Or maybe you’re just interested
-in web security generally, and don’t feel like you have a good grasp on
-it. These are web security basics with htmx, but they’re (mostly) not
+<p>This guide is for you if:</p>
+<ol type="a">
+<li>You have written a web application before, possibly an SPA, but are
+now interested in htmx</li>
+<li>You recently learned web development, and are interested in the
+general principles of writing a secure frontend</li>
+</ol>
+<p>These are web security basics with htmx, but they’re (mostly) not
 htmx-specific—you should know these rules if you’re putting <em>any</em>
 dynamic, user-generated content on the web.</p>
 <p>You should have a basic grasp of the semantics of the web, and be
@@ -48,10 +49,10 @@ security best practices:</p>
 <code>Secure</code></li>
 </ol>
 <p>In the following section, I’ll discuss what each of these rules does,
-and what kinds of attack they protect against. For the vast majority of
-htmx users—those using htmx to build a website that allows users to
-login, view some data, and update that data—you should never have any
-reason to break them.</p>
+and what kinds of attack they protect against. The vast majority of htmx
+users—those using htmx to build a website that allows users to login,
+view some data, and update that data—should never have any reason to
+break them.</p>
 <p>Later on I will discuss how to break some of these rules. Then, if
 you do need to break the rules, you’ll be doing so with the full
 knowledge that you’re increasing the conceptual burden of securing your
