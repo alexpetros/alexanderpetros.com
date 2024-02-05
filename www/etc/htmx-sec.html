@@ -3,18 +3,19 @@
 <h1 id="web-security-basics-with-htmx">Web Security Basics with
 htmx</h1>
 <p>As htmx has gotten more popular, it has started to reach communities
-who have never written server-generated HTML. Writing dynamic HTML on
-the server is common for many frameworks, like Rails, Django, and
-Spring, and those communities have well-documented template engines and
-best practices for using them. But it is a novel concept for people
-coming from JS frameworks like React, Vue, and Svelte, where the
-inclusion of JSX means they never write HTML at all.</p>
+who have never written server-generated HTML. Dynamic HTML generation is
+the standard way to use many popular web frameworks—like Rails, Django,
+and Spring—and those communities have well-documented template engines
+and best practices for using them. But it is a novel concept for those
+coming from JS frameworks—like React and Svelte—where the inclusion of
+JSX means you never write HTML directly.</p>
 <p>But have no fear! Writing secure htmx applications requires a
 slightly different approach to security, but it’s no harder than
 securing a JSX-based application. And because htmx is a very small
 addition to the browser’s hypermedia controls, it allows you to take
 advantage of the browser’s great built-in security features in ways that
-are harder to when your application requires a lot of JavaScript.</p>
+are difficult to do when your application requires a lot of
+JavaScript.</p>
 <h2 id="the-golden-rules">The Golden Rules</h2>
 <p>Follow these four simple rules, and you’ll be following the client
 security best practices:</p>
