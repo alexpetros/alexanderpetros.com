@@ -311,6 +311,12 @@ isn’t <code>yourdomain.com</code>—unless it’s a straightforward
 <code>&lt;a&gt;</code> link navigating to your page. This is
 <em>mostly</em> browser default behavior now, but it’s important to
 still set it directly.</p>
+<p>In 2024, <code>SameSite</code> is <a
+href="https://security.stackexchange.com/questions/252300/do-i-still-need-a-csrf-token">usually
+enough</a> to protect against CSRF, but there are <a
+href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html">additional
+mitigations</a> you can consider as well for more sensitive or
+complicated cases.</p>
 <p><strong>Important Note:</strong> <code>SameSite=Lax</code> only
 protects you at the domain level, not the subdomain level
 (i.e. <code>yourdomain.com</code>, not <code>yoursite.github.io</code>).
@@ -396,7 +402,7 @@ don’t have the bandwidth to research and test it, you shouldn’t do
 it.</p>
 <h3 id="non-cookie-authentication">Non-cookie authentication</h3>
 <p>JavaScript SPAs sometimes authenticate by saving a token in the
-user’s local storage, and then adding that to the <a
+client’s local storage, and then adding that to the <a
 href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization"><code>Authorization</code>
 header</a> of each request. Unfortunately, there’s no way to set the
 <code>Authroization</code> header without using JavaScript, which not as
@@ -411,6 +417,27 @@ omissions</del> little mysteries.</p>
 authenticating the user’s client with an API that you don’t control, in
 which case the regular precautions about routes you don’t control
 apply.</p>
+<h2 id="bonus-content-security-policy">Bonus: Content Security
+Policy</h2>
+<p>You should also be aware of the <a
+href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy">Content
+Security Policy</a> (CSP), which uses HTTP headers to set rules about
+the kind of content that your page is allowed to run. You can restrict
+the page to only load images from your domain, for example, or to
+disable inline scripts.</p>
+<p>This is not one of the “golden rules” because it’s not as easy to
+apply universally. Some htmx applications make use of inline scripting,
+and the <a href="https://htmx.org/attributes/hx-on/"><code>hx-on</code>
+attribute</a> is a generalized attribute listener that can evaluate
+arbitrary scripts (although <a
+href="https://htmx.org/docs/#configuration-options">it can be
+disabled</a>). Sometimes inline scripts are appropriate to preserve <a
+href="https://htmx.org/essays/locality-of-behaviour/">locality of
+behavior</a> on a application that is sufficiently secured against XSS,
+sometimes inline scripts aren’t necessary and you can adopt a stricter
+CSP. It all depends on your application’s security profile—the important
+part is that you are aware of the options available to you and able to
+perform that analysis.</p>
 <h2 id="is-this-a-step-back">Is this a step back?</h2>
 <p>You might reasonably wonder: if I didn’t have to know these things
 when I was building SPAs, isn’t htmx a step back in security? We would
