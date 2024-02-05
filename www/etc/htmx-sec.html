@@ -5,34 +5,25 @@ htmx</h1>
 <p>As htmx has gotten more popular, it has reached communities who have
 never written server-generated HTML before. Dynamic HTML templating was,
 and still is, the standard way to use many popular web frameworks—like
-Rails, Django, and Spring—and those communities have well-documented
-template engines and best practices for using them. But it is a novel
-concept for those coming from Single-Page Application (SPA)
-frameworks—like React and Svelte—where the prevalence of JSX means you
-never write HTML directly.</p>
-<p>But have no fear! Writing secure htmx applications with HTML
-templates is a slightly different security model, but it’s no harder
-than securing a JSX-based application, and in some ways it’s a lot
-easier.</p>
-<h2 id="who-is-this-for">Who is this for?</h2>
-<p>This guide is for you if:</p>
-<ol type="a">
-<li>You have written a web application before, possibly an SPA, but are
-now interested in htmx</li>
-<li>You recently learned web development, and are interested in the
-general principles of writing a secure frontend</li>
-</ol>
+Rails, Django, and Spring—but it is a novel concept for those coming
+from Single-Page Application (SPA) frameworks—like React and
+Svelte—where the prevalence of JSX means you never write HTML
+directly.</p>
+<p>But have no fear! Writing web applications with HTML templates is a
+slightly different security model, but it’s no harder than securing a
+JSX-based application, and in some ways it’s a lot easier.</p>
+<h2 id="who-is-guide-this-for">Who is guide this for?</h2>
 <p>These are web security basics with htmx, but they’re (mostly) not
 htmx-specific—these concepts are important to know if you’re putting
 <em>any</em> dynamic, user-generated content on the web.</p>
 <p>For this guide, you should already have a basic grasp of the
 semantics of the web, and be familiar with how to write a backend server
-of any kind. For instance, you should know not to create
-<code>GET</code> routes that can alter the backend state. We likewise
-assume that you’re not doing anything super fancy, like making a website
-that hosts other people’s websites. If you’re doing anything like that,
-the security concepts you need to be aware of far exceed the scope of
-this guide.</p>
+(in any language). For instance, you should know not to create
+<code>GET</code> routes that can alter the backend state. We also assume
+that you’re not doing anything super fancy, like making a website that
+hosts other people’s websites. If you’re doing anything like that, the
+security concepts you need to be aware of far exceed the scope of this
+guide.</p>
 <p>We make these simplifying assumptions in order to target the widest
 possible audience, without including distracting information—obviously
 this can’t catch everyone. No security guide is perfectly comprehensive.
@@ -366,21 +357,20 @@ class="sourceCode html"><code class="sourceCode html"><span id="cb13-1"><a href=
 <p>Or link to their personal website?</p>
 <div class="sourceCode" id="cb14"><pre
 class="sourceCode html"><code class="sourceCode html"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">a</span><span class="ot"> href</span><span class="op">=</span><span class="st">&quot;{{ user.fav_link }}&quot;</span><span class="dt">&gt;</span></span></code></pre></div>
-<p>The default “escape everything” approach, describe above, escapes
+<p>The default “escape everything” approach, described above, escapes
 forward slashes, so it will bork user-submitted URLs.</p>
-<p>You can fix this in a couple of ways. First, you can upload the image
-to your own server (or S3 bucket, or the like), generate the link
-yourself, and then include it, unescaped. In nunjucks, you’d do it like
-this:</p>
+<p>You can fix this in a couple of ways. The main strategy is to upload
+the image to your own server (or S3 bucket, or the like), generate the
+link yourself, and then include it, unescaped. In nunjucks, you’d do it
+like this:</p>
 <div class="sourceCode" id="cb15"><pre
 class="sourceCode html"><code class="sourceCode html"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;{{ user.fav_img_s3_url | safe }}&quot;</span><span class="dt">&gt;</span></span></code></pre></div>
 <p>Yes, you’re including unescaped content, but it’s a link that you
 generated, so you know it’s safe.</p>
-<p>The trick here is to let users customize these controls values, but
-don’t let them <em>define</em> the literal text of the control values.
-You can handle custom CSS in the same way. Rather than let your users
-specific the color directly, give them some limited choices, and set the
-choices based on their input.</p>
+<p>The trick here is to let users customize these values, but don’t let
+them define the literal text. You can handle custom CSS in the same way.
+Rather than let your users specific the color directly, give them some
+limited choices, and set the choices based on their input.</p>
 <div class="sourceCode" id="cb16"><pre
 class="sourceCode css"><code class="sourceCode css"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>{% if user<span class="fu">.favorite_color</span> === &#39;red&#39; %}</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>h1 { <span class="kw">color</span>: <span class="st">&#39;red&#39;</span><span class="op">;</span> }</span>
