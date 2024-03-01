@@ -14,18 +14,32 @@ h1, h2, h3 {
   font-family: "courier"
 }
 
+#career p {
+  margin: 5px 0;
+}
+
+#career h4 {
+  margin-top: 20px;
+  margin-bottom: 6px;
+}
+
+.job-titles {
+  font-weight: normal;
+  font-style: italic;
+}
+
 a, a:visited {
   color: #1B6F1B;
 }
 
 dl {
   display: grid;
-  max-width: 300px;
+  grid-template-columns: 2fr 3fr;
 }
 
-dt { grid-column: 1; }
+dt, dd { margin: 5px 10px; }
 
-dd { grid-column: 2; }
+dl.socials { max-width: 300px; }
 
 figure {
   margin: 0;
