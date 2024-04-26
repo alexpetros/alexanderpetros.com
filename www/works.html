@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<title>Complete Works - Alexander Petros</title>
+<title>Complete Works</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/resources/common.css">
 
@@ -8,11 +8,12 @@
 
 cite { font-style: normal; display: block; margin: .5rem 0; }
 cite > .pub { font-style: italic; }
+cite a, cite a:visited { }
 </style>
 
 <main>
 
-<h1>Alexander Petros Complete* Works</h1>
+<h1><a href=/>Alexander Petros</a> Complete* Works</h1>
 <p>*It sort of depends how you define "works"</p>
 
 <section id=cites-wrapper>
@@ -28,6 +29,22 @@ Enjoy the JSON version.
 </p>
 <script type="application/json" id=works-json>
 [
+  {
+      "type": "article",
+      "title": "The Best \"Hello World\" in Web Development",
+      "publication": "Unplanned Obsolesence",
+      "author": "Petros, Alexander",
+      "date": "2024-02-29",
+      "url": "https://unplannedobsolescence.com/blog/best-hello-world-web-development/"
+  },
+  {
+      "type": "article",
+      "title": "Web Security Basics (with htmx)",
+      "publication": "htmx.org",
+      "author": "Petros, Alexander",
+      "date": "2024-02-06",
+      "url": "https://htmx.org/essays/web-security-basics-with-htmx/"
+  },
   {
       "type": "article",
       "title": "Is htmx Just Another JavaScript Framework?",
@@ -67,6 +84,38 @@ Enjoy the JSON version.
       "author": "We Make Internet",
       "date": "2023-04-30",
       "url": "https://github.com/alexpetros/nondeterministic-model-with-a-gun/"
+  },
+  {
+      "type": "article",
+      "title": "Ouroboros of Bullshit",
+      "publication": "The Floating Continent",
+      "author": "Petros, Alexander",
+      "date": "2023-03-22",
+      "url": "https://thefloatingcontinent.com/blog/llm-bullshit"
+  },
+  {
+      "type": "article",
+      "title": "The Easiest Moment in Human History to Plan a Party",
+      "publication": "The Floating Continent",
+      "author": "Petros, Alexander",
+      "date": "2022-11-04",
+      "url": "https://thefloatingcontinent.com/blog/death-of-the-social-network"
+  },
+  {
+      "type": "article",
+      "title": "The Unbearable Cheapness of AI-Generated Art",
+      "publication": "The Floating Continent",
+      "author": "Petros, Alexander",
+      "date": "2022-09-16",
+      "url": "https://thefloatingcontinent.com/blog/ai-art-generator-cheapness"
+  },
+  {
+      "type": "article",
+      "title": "When the Down Arrow is not an Upside-Down Up Arrow",
+      "publication": "The Floating Continent",
+      "author": "Petros, Alexander",
+      "date": "2022-04-25",
+      "url": "https://thefloatingcontinent.com/blog/upside-down-arrow-unicode"
   },
   {
       "type": "project",
@@ -111,11 +160,16 @@ Enjoy the JSON version.
   }
 
   function makeArticle (work) {
+    const link = document.createElement('a')
     const cite = document.createElement('cite')
     const innerHTML = `
-     ${work.author}. “${work.title}”, <span class=pub>${work.publication}</span>, ${work.date}
+     ${work.author}.
+     <a href="${work.url}">“${work.title}”,</a>
+     <span class=pub>${work.publication}</span>,
+     ${work.date}
     `
     cite.innerHTML = innerHTML
+
     return cite
   }
 </script>

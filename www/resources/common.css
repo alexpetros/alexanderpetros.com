@@ -1,3 +1,7 @@
+:root {
+  --accent-color: #1B6F1B;
+}
+
 body {
   font-family: Verdana;
   background-color: #EEEEEE;
@@ -29,7 +33,7 @@ h1, h2, h3 {
 }
 
 a, a:visited {
-  color: #1B6F1B;
+  color: var(--accent-color);
 }
 
 dl {
@@ -40,6 +44,8 @@ dl {
 dt, dd { margin: 5px 10px; }
 
 dl.socials { max-width: 300px; }
+
+ul li { margin: 10px 0; }
 
 figure {
   margin: 0;
