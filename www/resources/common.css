@@ -1,13 +1,15 @@
 :root {
-  --accent-color: #1B6F1B;
+  --page-background-color: rgb(238, 238, 238);
+  --accent-color: rgb(27, 111, 27);
 }
 
 body {
   font-family: Verdana;
-  background-color: #EEEEEE;
+  background-color: var(--page-background-color);
   padding: 0 20px;
   max-width: 800px;
   margin: 40px auto;
+  line-height: 1.4rem;
 }
 
 h1 { font-size: 3rem; }
@@ -53,6 +55,33 @@ figure {
 section {
   display: block;
   clear: both;
+}
+
+details {
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 0.5em 0.5em 0;
+}
+
+summary {
+  font-weight: bold;
+  user-select: none;
+  margin: -0.5em -0.5em 0;
+  padding: 0.5em;
+}
+
+summary:hover {
+  color: var(--accent-color);
+}
+
+details[open] {
+  padding: 0.5em;
+  background-color: white;
+}
+
+details[open] summary {
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 0.5em;
 }
 
 figure img {
