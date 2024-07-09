@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<title>On Web Services</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/resources/common.css">
+
+<style>
+details {
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 0.5em 0.5em 0;
+}
+
+summary {
+  font-weight: bold;
+  user-select: none;
+  margin: -0.5em -0.5em 0;
+  padding: 0.5em;
+}
+
+summary:hover {
+  color: var(--accent-color);
+}
+
+details[open] {
+  padding: 0.5em;
+  background-color: white;
+}
+
+details[open] summary {
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 0.5em;
+}
+</style>
+
+<h1>On Web Services</h1>
+
+<details>
+<summary>Alex's Crank Ideas About Web Services</summary>
+<ol>
+  <li>Many web services experience traffic loads that can be handled by a single server
+  <li>Many web services have requirements that can be met with HTML and little to no JavaScript
+  <li>Many people believe, incorrectly, that (1) or (2) does not apply to their web service
+  <li>A web service that adheres to (1) and (2) is orders of magnitude cheaper to maintain than one
+    which does not, and often provides a better user experience
+</ol>
+</details>
+
+<p>
+I have built a couple production, public-facing web services this way, all of which I maintain
+entirely by myself (they just work).
+
+

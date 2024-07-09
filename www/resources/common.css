@@ -22,34 +22,12 @@ h1, h2, h3 {
   font-family: "courier"
 }
 
-#career p {
-  margin: 5px 0;
-}
-
-#career h4 {
-  margin-top: 20px;
-  margin-bottom: 6px;
-}
-
-.job-titles {
-  font-weight: normal;
-  font-style: italic;
-}
-
 a, a:visited {
   color: var(--accent-color);
 }
 
-dl {
-  display: grid;
-  grid-template-columns: 2fr 3fr;
-}
-
+dl { display: grid; grid-template-columns: 2fr 3fr; }
 dt, dd { margin: 5px 10px; }
-
-dl.socials { max-width: 300px; }
-
-ul li { margin: 10px 0; }
 
 figure {
   margin: 0;
@@ -57,42 +35,4 @@ figure {
 section {
   display: block;
   clear: both;
-}
-
-details {
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  padding: 0.5em 0.5em 0;
-}
-
-summary {
-  font-weight: bold;
-  user-select: none;
-  margin: -0.5em -0.5em 0;
-  padding: 0.5em;
-}
-
-summary:hover {
-  color: var(--accent-color);
-}
-
-details[open] {
-  padding: 0.5em;
-  background-color: white;
-}
-
-details[open] summary {
-  border-bottom: 1px solid #aaa;
-  margin-bottom: 0.5em;
-}
-
-figure img {
-  display: block;
-  margin: 0 auto;
-  height: auto;
-  max-width: 100%;
-}
-
-#hero-image {
-  float: right;
 }

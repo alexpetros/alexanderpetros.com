@@ -3,13 +3,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/resources/common.css">
 
+<style>
+figure img {
+  display: block;
+  margin: 0 auto;
+  height: auto;
+  max-width: 100%;
+}
+
+#quick-links {
+  text-align: center;
+  ul { padding: 0; list-style: none; }
+  li { margin: 10px 0; }
+  li:nth-child(odd) { transform: rotate(1deg); }
+  li:nth-child(even) { transform: rotate(-1deg); }
+}
+
+#websites {
+  text-align: center;
+  dl {
+    margin: 10px auto;
+    grid-template-columns: 1fr;
+  }
+  dd { margin-bottom: 20px; }
+}
+
+</style>
+
 <main>
+<h1><a href="/">Alexander Petros dot com</a></h1>
 
-<h1><a href="/">Alexander Petros</a></h1>
+<!-- Welcome to my home page on the World Wide Web! -->
+<!-- <h2>The 24601 (Who am I?)</h2> -->
+<!-- I'm a software engineer, writer, and artist originally from Miami, Florida. -->
+<!-- I currently live in New York City. -->
+<!-- The road to success is always under construction; this little garden of a web page is too 👷🏗️ -->
 
-<p>Welcome to my home page on the World Wide Web! It can always be found at <a href="http://alexanderpetros.com">alexanderpetros.com</a>.
-<p>
-The road to success is always under construction; this little garden of a web page is too 👷🏗️
 
 <figure>
   <img width=500
@@ -18,44 +47,21 @@ The road to success is always under construction; this little garden of a web pa
        alt="A photo of Alex Petros, wearing jeans and a white tshirt, watering plants in the foreground. To his left is a tall wooden fence.">
 </figure>
 
-<h2>The 24601 (Who am I?)</h2>
-Alexander Petros!
-I'm a software engineer, writer, and artist living in New York City.
-I'm originally from Miami, Florida.
+<section id=quick-links>
+<h2>You might be looking for...</h2>
+<ul>
+  <li><a href="/now">what i'm doing <strong><em>right now</em></strong></a></li>
+  <li><a href="/resume">something that looks like a resume</a></li>
+  <li><a href="/contact">my contact info and social profiles</a></li>
+  <li><a href="/press">selected press</a></li>
+  <li><a href="/web-services">alex's crank ideas about web services</a></li>
+  <li><a href="/work">list of my work</a></li>
+  <li><a href="/reviews">reviews of my work</a></li>
+</ul>
+</section>
 
-<h2>What I've Got Going On</h2>
-<p>
-A little while ago I had some ideas about how to build durable web systems and I quit my job to
-work on them. Here, I'll tell you what they are:
-
-<details>
-
-<summary>Alex's Crank Ideas About Web Services</summary>
-<ol>
-  <li>Many web services experience traffic loads that can be handled by a single server
-  <li>Many web services have requirements that can be met with HTML and little to no JavaScript
-  <li>Many people believe, incorrectly, that (1) or (2) does not apply to their web service
-  <li>A web service that adheres to (1) and (2) is orders of magnitude cheaper to maintain than one
-    which does not, and often provides a better user experience
-</ol>
-</details>
-
-<p>
-I have built a couple production, public-facing web services this way, all of which I maintain
-entirely by myself (they just work).
-
-<p>
-I'm currently working on bringing more expressivity to HTML with
-<a href="https://github.com/alexpetros/triptych">The Triptych Project</a>, the basic principles of
-which I outlined in <a href="https://unplannedobsolescence.com/blog/life-and-death-of-htmx/">
-"The Life & Death of htmx" talk at Big Sky Dev Con</a>.
-
-<p>
-I'm also working on an ActivityPub concept.
-
+<section id=websites>
 <h2>My Websites</h2>
-<p>
-Much of my work can be found on my other websites:
 <dl>
   <dt><a href="https://unplannedobsolescence.com"><cite>Unplanned Obsolescence</cite></a></dt>
   <dd>My blog about writing software that doesn't rot</dd>
@@ -65,9 +71,12 @@ Much of my work can be found on my other websites:
   <dd>Art project with my friend <a href="https://wttdotm.com">Morry</a></dd>
 </dl>
 
-I've also written for <a href="https://htmx.org">htmx.org</a> and <a href="https://washpost.engineering/">The Washington Post Engineering Blog</a>.
-<h2>Selected Works</h2>
+<!-- I've also written for <a href="https://htmx.org">htmx.org</a> and <a href="https://washpost.engineering/">The Washington Post Engineering Blog</a>. -->
+</section>
 
+
+
+<h2>Selected Works</h2>
 <p>Here's a couple recent works that I'm proud of:
 <dl>
   <dt><a href="https://thefloatingcontinent.com/blog/llm-bullshit/">Ouroboros of Bullshit</a></dt>
@@ -81,83 +90,5 @@ I've also written for <a href="https://htmx.org">htmx.org</a> and <a href="https
   <dt><a href="https://htmx.org/essays/no-build-step/">Why htmx Doesn't Have a Build Step</a></dt>
   <dd>How to do less with less</dd>
 </dl>
-
-<p>See the <a href="/works">complete works</a> page for things I've done,
-and <a href="/reviews">reviews</a> for what people thought of them.</p>
-
-<section id=press>
-<h2>In The Press</h2>
-<ul>
-  <li>
-    <a href="https://www.thedartmouth.com/article/2024/04/doc-goes-digital-a-look-into-the-impact-of-trailhead">
-      "DOC Goes Digital: A Look Into the Impact of Trailhead"</a>,
-    <cite>The Dartmouth</cite>, April 17, 2024
-  </li>
-  <li>
-    <a href="https://www.thedartmouth.com/article/2024/04/doc-goes-digital-a-look-into-the-impact-of-trailhead">
-      "This AI clone of Reddit’s Am I The Asshole forum will give you the best bad advice"</a>,
-    <cite>The Verge</cite>, April 20, 2022
-  </li>
-</ul>
-</section>
-
-<section id=career>
-<h2>Career</h2>
-
-
-<h4>Recurse Center, <span class=job-titles>Spring 2024 Retreat Member</span></h4>
-<p>
-I am doing a 3-month programming retreat at the <a href="https://www.recurse.com/scout/click?t=044d120abf1c334d0b2a3132634eb025">Recurse Center</a>!
-It's a tremendous group of thoughtful, smart people all working on interesting projects.
-I'm working on an open-source ActivityPub implementation that's really easy to self-host.
-
-<h4>htmx, <span class=job-titles>Core Maintainer</span></h4>
-<p>
-Core maintainer and <a href="https://htmx.org/essays/">occasional blogger</a> for the <a href="https://htmx.org/">htmx</a> JavaScript Library.
-The hypermedia concepts revitalized by htmx are going to reinvent web development for the next decade.
-I do not get paid.
-
-<h4>Freelance Software Consulting, <span class=job-titles>Self-employed</span></h4>
-<p>
-I build software infrastructure for non-software companies, with architectures that can last for years with very little maintenance.
-You can hire me to do this for you too.
-
-<h4>Dartmouth College, <span class=job-titles>Web Administrator</span></h4>
-<p>
-I rebuilt the Outdoor Programs registration stack from scratch (with htmx, to really test out its capabilities) and I now maintain it.
-This was an unmitigated success, in that it is reliable, cheap, and runs with with virtually no maintenance.
-I also help them out with other minor web projects related to the <a href="https://outdoors.dartmouth.edu/firstyear/">First Year Trips</a> program.
-
-<h3>Past</h3>
-
-<h4>The Washington Post, <span class=job-titles>Software Engineer → Senior Software Engineer → Engineering Lead</span></h4>
-<p>
-I was responsible for the software platform that powers The Post's freelancing operations, which I took over when it crashed.
-I rebuilt the entire deployment stack and got the system to a stable state.
-In my capacity as an Engineering Lead, I was in charge of both engineering direction and product management, working with multiple department stakeholders to coordinate and prioritize our very limited resources.
-I managed one (1) person.
-
-<h4>Amazon, <span class=job-titles>SDE Intern → SDE I → SDE II</span>.</h4>
-<p>
-I was on the Alexa Video Multimodal team, which was responsible for video playback on the Echo Show family of devices.
-I worked on improving the service's performance under peak load, and designed partner-facing APIs.
-
-<h4><strong>Stealth Startup</strong>, <span class=job-titles>Software Engineer</span></h4>
-<p>
-I quit after three months because I did not like it.
-</section>
-
-<section id=socials>
-<h2>The Socials</h2>
-<dl class=socials>
-  <dt>Email<dd><a href="mailto:contact@alexpetros.com">contact@alexpetros.com</a>
-  <dt>Twitter<dd><a href="https://twitter.com/goodtweetsalex">@goodtweetsalex</a>
-  <dt>Mastodon<dd><a href="https://indieweb.social/@alexpetros">@alexpetros@indieweb.social</a>
-  <dt>GitHub<dd><a href="https://github.com/alexpetros">@alexpetros</a>
-  <dt>LinkedIn<dd><a href="https://www.linkedin.com/in/apetros/">/apetros</a>
-  <dt>Instagram<dd><a href="https://www.instagram.com/alexwpetros">@alexwpetros</a>
-  <dt>Threads<dd><a href="https://www.threads.net/@alexwpetros">@alexwpetros</a>
-</dl>
-<section>
 
 </main>
