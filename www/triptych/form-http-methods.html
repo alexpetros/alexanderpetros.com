@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<title>Support PUT, PATCH, and DELETE in HTML Forms</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+ --header-color: #039;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  font-family: Verdana;
+  margin: 20px auto;
+  max-width: 700px;
+  padding: 0 20px;
+}
+
+h1, h2, h3 {
+  color: var(--header-color);
+  font-weight: normal;
+}
+
+h1 {
+  counter-reset: header-count;
+}
+
+h2 {
+  counter-reset: subheader-count;
+}
+
+h2::before {
+  counter-increment: header-count;
+  content: counter(header-count) '. ';
+}
+
+h3::before {
+  counter-increment: subheader-count;
+  content: counter(header-count) '.' counter(subheader-count) '. ';
+}
+
+dt {
+  font-weight: bold;
+}
+
+a:visited {
+  color: blue;
+}
+
+details {
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 0.5em 0.5em 0;
+}
+
+details[open] summary {
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 0.5em;
+}
+
+summary {
+  font-weight: bold;
+  user-select: none;
+  margin: -0.5em -0.5em 0;
+  padding: 0.5em;
+}
+
+summary:hover {
+  background-color: lightgray;
+}
+
+ol {
+  counter-reset: toc-count;
+  list-style-type: none;
+}
+
+ol li::before {
+  counter-increment: toc-count;
+  content: counters(toc-count, '.', decimal) '. ';
+}
+</style>
+
+<h1>Support PUT, PATCH, and DELETE in HTML Forms</h1>
+
+<dl>
+  <dt>Author</dt>
+  <dd>Alexander Petros</dd>
+  <dt>Date Created</dt>
+  <dd>July xx, 2024
+  <dt>Last Updated</dt>
+  <dd>July xx, 2024
+  <dt>Status</dt>
+  <dd style="color: red;">Unpublished</dd>
+
+</dl>
+
+<details>
+<summary>Table of Contents</summary>
+<ol>
+
+  <li>
+    <a href=#summary>Summary</a>
+    <ol>
+      <li><a href=#goals>Goals</a>
+    </ol>
+  </li>
+
+  <li>
+    <a href=#proposed-changes>Proposed Changes</a>
+    <ol>
+    </ol>
+  </li>
+
+  <li>
+    <a href=#history>Example Usage</a>
+    <ol>
+    </ol>
+  </li>
+
+  <li>
+    <a href=#history>History</a>
+    <ol>
+    </ol>
+  </li>
+
+  <li>
+    <a href=#history>References</a>
+    <ol>
+    </ol>
+  </li>
+
+</ol>
+</details>
+
+
+<h2 id=summary>Summary</h2>
+<p>
+A proposal for adding PUT, PATCH, and DELETE support to HTML forms.
+
+<p>
+Proposal 1/3 in the <a href=/triptych>Triptych Proposals</a>.
+
+<h3 id=goals>Goals</h3>
+
+PUT, PATCH, and DELETE support in forms should:
+
+<ul>
+  <li>seamlessly integrate with existing form semantics
+  <li>be easier than implementing the same functionality in JavaScript
+  <li>be subject to the same security considerations as the fetch API
+  <li>not introduce new security considerations
+</ul>
+
+<h2 id=proposed-changes>Proposed Additions</h2>
+
+New values for the form <code>method</code> attribute:
+<ul>
+  <li><code>PUT</code> - makes the form issue a PUT request
+  <li><code>PATCH</code> - makes the form issue a PATCH request
+  <li><code>DELETE</code> - makes the form issue a DELETE request
+</ul>
+
+<p>
+Existing form controls (e.g. <code>action</code>, <code>enctype</code>) should operate identically.
+
+<h3>Payload Body</h3>
+<p>
+Both PUT and PATCH bodies can uncontroversially inherit the semantics of POST bodies. The difference
+between each of these methods is the intent for the enclosed representation, not the representation
+itself.<a href="#ref-1">[1]</a> PUT and PATCH both support the same Content-Type headers as POST.
+Server-side frameworks that support PUT and PATCH handle their bodies identically to POST bodies.<a
+href="#ref-2">[2]</a>
+
+<p>
+DELETE bodies are more complicated. While
+<a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-delete">RFC9110</a> states that a <q>DELETE
+request has no generally defined semantics,</q> it also states that <q>a client SHOULD NOT generate
+content in a DELETE request unless it is made directly to an origin server that has previously
+indicated, in or out of band, that such a request has a purpose and will be adequately
+supported</q>. Given that strong discouragement, it would probably be unwise to include the contents
+of a DELETE form in the request body payload.
+
+<p>
+Therefore, forms with <code>method=DELETE</code> should encode their inputs as part the URI, if
+possible. In this manner, they emulate forms with no <code>method</code>, or <code>method=GET</code>.
+
+<h3 id=navigation>Navigation</h3>
+
+<h2 id=sample-usage>Sample Usage</h2>
+
+<h2 id=history>History</h2>
+
+<h2 id=references>References</h2>
+
+<p id=ref-1>
+[1]
+Per <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-put">RFC9110</a>, the difference
+between POST and PUT <q>is highlighted by the different intent for the enclosed representation,</q>
+which implies that they support the same set of representations. Per <a
+  href="https://www.rfc-editor.org/rfc/rfc5789">RF5789</a>, which defines PATCH, <q>the difference
+  between the PUT and PATCH requests is reflected in the way the server processes the enclosed
+entity to modify the resource</q>, which again implies that they are capable of representing
+resources the same way.
+
+<p id=ref-2>
+[2]
+Citation needed.
