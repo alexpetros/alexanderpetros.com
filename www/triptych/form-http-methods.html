@@ -166,20 +166,42 @@ New values for the form <code>method</code> attribute:
 Existing form controls (e.g. <code>action</code>, <code>enctype</code>) should operate identically.
 
 <h3>Payload Body</h3>
-<p>
-Both PUT and PATCH bodies can uncontroversially inherit the semantics of POST bodies. The difference
-between each of these methods is the intent for the enclosed representation, not the representation
-itself.<a href="#ref-1">[1]</a> PUT and PATCH both support the same Content-Type headers as POST.
-Server-side frameworks that support PUT and PATCH handle their bodies identically to POST bodies.<a
-href="#ref-2">[2]</a>
 
 <p>
-DELETE bodies are more complicated. While
+Both PUT and PATCH payloads can uncontroversially inherit the semantics of POST payloads. The
+difference between each of these methods is the intent for the enclosed representation, not the
+representation itself.<f-note>
+  Per <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-put">RFC9110</a>, the difference
+  between POST and PUT <q>is highlighted by the different intent for the enclosed representation,</q>
+  which implies that they support the same set of representations. Per <a
+    href="https://www.rfc-editor.org/rfc/rfc5789">RF5789</a>, which defines PATCH, <q>the difference
+    between the PUT and PATCH requests is reflected in the way the server processes the enclosed
+  entity to modify the resource</q>, which again implies that they are capable of representing
+  resources the same way.
+</f-note>
+
+PUT and PATCH both support the same Content-Type headers as POST.
+Server-side frameworks that support PUT and PATCH handle their bodies identically to POST
+bodies.<f-note>Citation needed.</f-note> PUT and PATCH forms should send identical payloads to their
+POST equivalents.
+
+<p>
+DELETE forms should format their payloads as URL parameters, like GET forms.
+DELETE body semantics are technically undefined, but DELETE payloads are discouraged by the
+spec.<f-note>
+While
 <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-delete">RFC9110</a> states that a <q>DELETE
 request has no generally defined semantics,</q> it also states that <q>a client SHOULD NOT generate
 content in a DELETE request unless it is made directly to an origin server that has previously
 indicated, in or out of band, that such a request has a purpose and will be adequately
-supported</q>. Given that strong discouragement, it would probably be unwise to include the contents
+supported</q>.
+While one could certainly argue that the server returning HTML with
+<code>&lt;form method=DELETE&gt;</code> constitutes indication of support, we defer to the library
+ecosystem, which generally understands the similar language in the GET and DELETE specs as a tacit
+discouragement of payload bodies for both.
+</f-note>
+
+Given that strong discouragement, it would probably be unwise to include the contents
 of a DELETE form in the request body payload.
 
 <p>
@@ -192,18 +214,35 @@ possible. In this manner, they emulate forms with no <code>method</code>, or <co
 
 <h2 id=history>History</h2>
 
-<h2 id=references>References</h2>
 
-<p id=ref-1>
-[1]
-Per <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-put">RFC9110</a>, the difference
-between POST and PUT <q>is highlighted by the different intent for the enclosed representation,</q>
-which implies that they support the same set of representations. Per <a
-  href="https://www.rfc-editor.org/rfc/rfc5789">RF5789</a>, which defines PATCH, <q>the difference
-  between the PUT and PATCH requests is reflected in the way the server processes the enclosed
-entity to modify the resource</q>, which again implies that they are capable of representing
-resources the same way.
+<section class=footnotes>
+<h2 id=footnotes>Footnotes</h2>
+</section>
 
-<p id=ref-2>
-[2]
-Citation needed.
+
+<script>
+class Footnote extends HTMLElement {
+  static numFootnotes = 0
+
+  connectedCallback() {
+    Footnote.numFootnotes += 1
+
+    this.content = this.innerHTML
+    this.num = Footnote.numFootnotes
+    this.innerHTML = `<sup id="fn-${this.num}"><a href="#ref-${this.num}">[${this.num}]</a></sup>`
+  }
+}
+
+customElements.define('f-note', Footnote)
+
+const footnotesSection = document.querySelector('section.footnotes')
+const footnotes = document.querySelectorAll('f-note')
+
+for (footnote of footnotes) {
+  const p = document.createElement('p')
+  p.id = `ref-${footnote.num}`
+  p.innerHTML = `[${footnote.num}] ${footnote.content} <a href="#fn-${footnote.num}">↩</a>`
+  footnotesSection.append(p)
+}
+
+</script>
