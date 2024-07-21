@@ -85,6 +85,7 @@ ol li::before {
 }
 
 pre.code {
+  overflow: wrap;
   background-color: lightgray;
   padding: 10px;
 }
@@ -122,14 +123,14 @@ p.footnote:target {
 </details>
 
 
-<h2 id=summary>Summary</h2>
+<h2>Summary</h2>
 <p>
 A proposal for adding PUT, PATCH, and DELETE support to HTML forms.
 
 <p>
 Proposal 1/3 in the <a href=/triptych>Triptych Proposals</a>.
 
-<h3 id=goals>Goals</h3>
+<h3>Goals</h3>
 <p>
 PUT, PATCH, and DELETE support in forms should:
 
@@ -286,9 +287,8 @@ Host: example.com
 
 And the server could choose to either send a delete confirmation page, or redirect elsewhere.
 
-<!-- <h3 id=hateoas>Completing Hypertext</h3> -->
 
-<h2 id=considerations>Additional Considerations</h2>
+<h2>Additional Considerations</h2>
 <h3 id=body-content>Body Content</h3>
 
 <p>
@@ -328,7 +328,7 @@ discouragement of body content for both.
 Therefore, forms with <code>method=DELETE</code> should encode their inputs as part the URI,
 emulating the behavior of forms with no <code>method</code>, or <code>method=GET</code>.
 
-<h3 id=caching>Caching</h3>
+<h3>Caching</h3>
 <p>
 PUT, PATCH, and DELETE requests are <a href="https://httpwg.org/specs/rfc9110.html#safe.methods">
 unsafe</a> (not read-only), and therefore can never be cached.
@@ -349,10 +349,10 @@ PUT and DELETE responses are never cacheable.<f-note>
 </f-note>
 
 
-<h3 id=navigation>Navigation</h3>
+<h3>Navigation</h3>
 
 
-<h2 id=history>Justification</h2>
+<h2>Justification</h2>
 
 <p>
 CRUD not complete; uniform interface not complete
@@ -374,10 +374,13 @@ Lots of perf gains to be had with better HTTP method use
 
 caching?
 
-<h2 id=history>History</h2>
+<h2>Ecosystem Demand</h2>
 
 
-<h2 id=alternatives>Alternatives and Optional Proposals</h2>
+<h2>History</h2>
+
+
+<h2>Alternatives and Optional Proposals</h2>
 <h3 id=delete-bodyies>Optional: DELETE request bodies</h3>
 <p>
 There's no inherent reason why a DELETE request couldn't send body content, and many popular
@@ -392,7 +395,7 @@ would send its data as part of the body, for DELETE (or GET) requests; it would 
 other methods.
 
 <section class=footnotes>
-<h2 id=footnotes>Footnotes</h2>
+<h2>Footnotes</h2>
 </section>
 
 
@@ -428,6 +431,7 @@ const headings = document.querySelectorAll('h2,h3')
 const topList = document.createElement('ol')
 let currentH2
 for (heading of headings) {
+  heading.id = heading.innerText.replace(' ', '-')
   if (heading.tagName === 'H2') {
     currentH2 = document.createElement('li')
     currentH2.innerHTML = `<a href="#${heading.id}">${heading.innerText}</a><ol></ol>`
