@@ -4,7 +4,8 @@
 
 <style>
 :root {
- --header-color: #039;
+  --page-background: white;
+  --header-color: #039;
 }
 
 html {
@@ -12,10 +13,12 @@ html {
 }
 
 body {
+  background-color: var(--page-background);
   font-family: Verdana;
   margin: 20px auto;
-  max-width: 700px;
+  max-width: 900px;
   padding: 0 20px;
+  line-height: 1.3;
 }
 
 h1, h2, h3 {
@@ -80,13 +83,28 @@ ol li::before {
   counter-increment: toc-count;
   content: counters(toc-count, '.', decimal) '. ';
 }
+
+pre.code {
+  background-color: lightgray;
+  padding: 10px;
+}
+
+p.footnote {
+  background-color: var(--page-background);
+  padding: 5px 0;
+}
+
+p.footnote:target {
+  background-color: yellow;
+}
+
 </style>
 
 <h1>Support PUT, PATCH, and DELETE in HTML Forms</h1>
 
 <dl>
   <dt>Author</dt>
-  <dd>Alexander Petros</dd>
+  <dd>Alexander Petros <a href="mailto:contact@alexpetros.com">(contact@alexpetros.com</a>)</dd>
   <dt>Date Created</dt>
   <dd>July xx, 2024
   <dt>Last Updated</dt>
@@ -96,42 +114,11 @@ ol li::before {
 
 </dl>
 
-<details>
+<details class=toc>
 <summary>Table of Contents</summary>
-<ol>
-
-  <li>
-    <a href=#summary>Summary</a>
-    <ol>
-      <li><a href=#goals>Goals</a>
-    </ol>
-  </li>
-
-  <li>
-    <a href=#proposed-changes>Proposed Changes</a>
-    <ol>
-    </ol>
-  </li>
-
-  <li>
-    <a href=#history>Example Usage</a>
-    <ol>
-    </ol>
-  </li>
-
-  <li>
-    <a href=#history>History</a>
-    <ol>
-    </ol>
-  </li>
-
-  <li>
-    <a href=#history>References</a>
-    <ol>
-    </ol>
-  </li>
-
-</ol>
+<noscript>
+  The table of contents is generated with JavaScript, which you have disabled.
+</noscript>
 </details>
 
 
@@ -143,18 +130,18 @@ A proposal for adding PUT, PATCH, and DELETE support to HTML forms.
 Proposal 1/3 in the <a href=/triptych>Triptych Proposals</a>.
 
 <h3 id=goals>Goals</h3>
-
+<p>
 PUT, PATCH, and DELETE support in forms should:
 
 <ul>
-  <li>seamlessly integrate with existing form semantics
+  <li>integrate seamlessly with existing form semantics
   <li>be easier than implementing the same functionality in JavaScript
-  <li>be subject to the same security considerations as the fetch API
+  <li>integrate with existing servers and frameworks that support those methods
   <li>not introduce new security considerations
 </ul>
 
-<h2 id=proposed-changes>Proposed Additions</h2>
-
+<h2 id=proposed-changes>Proposed Changes</h2>
+<p>
 New values for the form <code>method</code> attribute:
 <ul>
   <li><code>PUT</code> - makes the form issue a PUT request
@@ -163,57 +150,163 @@ New values for the form <code>method</code> attribute:
 </ul>
 
 <p>
+All new method keywords are case insensitive.
 Existing form controls (e.g. <code>action</code>, <code>enctype</code>) should operate identically.
-
-<h3>Payload Body</h3>
-
-<p>
-Both PUT and PATCH payloads can uncontroversially inherit the semantics of POST payloads. The
-difference between each of these methods is the intent for the enclosed representation, not the
-representation itself.<f-note>
-  Per <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-put">RFC9110</a>, the difference
-  between POST and PUT <q>is highlighted by the different intent for the enclosed representation,</q>
-  which implies that they support the same set of representations. Per <a
-    href="https://www.rfc-editor.org/rfc/rfc5789">RF5789</a>, which defines PATCH, <q>the difference
-    between the PUT and PATCH requests is reflected in the way the server processes the enclosed
-  entity to modify the resource</q>, which again implies that they are capable of representing
-  resources the same way.
-</f-note>
-
-PUT and PATCH both support the same Content-Type headers as POST.
-Server-side frameworks that support PUT and PATCH handle their bodies identically to POST
-bodies.<f-note>Citation needed.</f-note> PUT and PATCH forms should send identical payloads to their
-POST equivalents.
-
-<p>
-DELETE forms should format their payloads as URL parameters, like GET forms.
-DELETE body semantics are technically undefined, but DELETE payloads are discouraged by the
-spec.<f-note>
-While
-<a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-delete">RFC9110</a> states that a <q>DELETE
-request has no generally defined semantics,</q> it also states that <q>a client SHOULD NOT generate
-content in a DELETE request unless it is made directly to an origin server that has previously
-indicated, in or out of band, that such a request has a purpose and will be adequately
-supported</q>.
-While one could certainly argue that the server returning HTML with
-<code>&lt;form method=DELETE&gt;</code> constitutes indication of support, we defer to the library
-ecosystem, which generally understands the similar language in the GET and DELETE specs as a tacit
-discouragement of payload bodies for both.
-</f-note>
-
-Given that strong discouragement, it would probably be unwise to include the contents
-of a DELETE form in the request body payload.
-
-<p>
-Therefore, forms with <code>method=DELETE</code> should encode their inputs as part the URI, if
-possible. In this manner, they emulate forms with no <code>method</code>, or <code>method=GET</code>.
-
-<h3 id=navigation>Navigation</h3>
 
 <h2 id=sample-usage>Sample Usage</h2>
 
+All examples in this section assume that the host origin is https://example.com.
+
+<h3 id=basic-put-form>Updating A Resource</h3>
+
+<code>
+<pre class=code>
+&lt;form action="/users/45" method="PUT"&gt;
+  &lt;input type="text" name="name"&gt;
+  &lt;input type="email" name="email"&gt;
+  &lt;button&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</code>
+
+If the user enters "Alex Petros" as the name and "contact@alexpetros.com" as the email, it will
+result in the follow HTTP request:
+
+<code>
+<pre class=code>
+PUT /user/45 HTTP/1.1
+Host: example.com
+Content-Type: application/x-www-form-urlencoded
+...
+name=Alex%20Petros&email=contact
+</pre>
+</code>
+
+
+<h3 id=basic-put-form>Deleting A Resource</h3>
+
+<code>
+<pre class=code>
+&lt;form action="/users/45" method="DELETE"&gt;
+  &lt;button&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</code>
+
+Clicking submit would result in the following HTTP request:
+
+<code>
+<pre class=code>
+DELETE /user/45 HTTP/1.1
+Host: example.com
+...
+name=alex%20petros&email=contact
+</pre>
+</code>
+
+
+<h2 id=considerations>Additional Considerations</h2>
+<h3 id=body-content>Body Content</h3>
+
+<p>
+PUT and PATCH forms should send identical content to their POST equivalents.<f-note>
+<a href="https://www.rfc-editor.org/rfc/rfc9110.html#appendix-B.3-5">"Content" was previously known
+  as "payload"</a> or "payload body", and is set using the <code>body</code> property of a fetch
+request.
+</f-note>
+
+All three methods support the same Content-Type headers, and they are differentiated from each
+other based on the intent for the enclosed representation, not the representation itself.<f-note>
+Per <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-put">RFC9110</a>, the difference
+between POST and PUT <q>is highlighted by the different intent for the enclosed representation,</q>
+which implies that they support the same set of representations. Per
+<a href="https://www.rfc-editor.org/rfc/rfc5789">RF5789</a>, which defines PATCH, <q>the
+difference between the PUT and PATCH requests is reflected in the way the server processes the
+enclosed entity to modify the resource</q>, which again implies that they are capable of
+representing resources the same way.
+</f-note>
+Most, if not all, servers that support PUT and PATCH handle their bodies identically to POST bodies,
+so their addition to the supported form methods can be adopted by the ecosystem
+immediately.<f-note>Citation needed.</f-note>
+
+<p>
+DELETE forms should format their content as URL parameters, like GET forms. While both GET and
+DELETE body semantics are technically undefined, including content in the request body is somewhat
+discouraged by the spec.<f-note>
+While <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-delete">RFC9110</a> states that a
+<q>DELETE request has no generally defined semantics,</q> it also states that <q>a client SHOULD NOT
+generate content in a DELETE request unless it is made directly to an origin server that has
+previously indicated, in or out of band, that such a request has a purpose and will be adequately
+supported</q>. While one could certainly argue that the server returning HTML with <code>&lt;form
+  method=DELETE&gt;</code> constitutes indication of support for content, we defer to the library
+ecosystem, which generally understands the similar language in the GET and DELETE specs as a tacit
+discouragement of body content for both.
+</f-note>
+Therefore, forms with <code>method=DELETE</code> should encode their inputs as part the URI,
+emulating the behavior of forms with no <code>method</code>, or <code>method=GET</code>.
+
+<h3 id=caching>Caching</h3>
+<p>
+PUT, PATCH, and DELETE requests are <a href="https://httpwg.org/specs/rfc9110.html#safe.methods">
+unsafe</a> (not read-only), and therefore can never be cached.
+
+<p>
+PATCH <em>responses</em> are technically cacheable in the same way that POST responses are: if
+certain information is explicitly provided, subsequent GET requests may use the cached PATCH
+response to represent that resource.<f-note>
+<a href="https://www.rfc-editor.org/rfc/rfc5789#section-2">RFC 5789 Section 2</a>,
+</f-note> Browsers that implement this behavior for POST requests should do so for PATCH requests,
+although the spec notes that the overwhelming majority of cache implementations do not.<f-note>
+<a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.3-2">RFC 9110 Section 9.2.3</a>,
+
+<p>
+PUT and DELETE responses are never cacheable.<f-note>
+<a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.4-13">RFC 9110 Section 9.3.4</a>,
+<a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.5-7">Section 9.3.5</a>
+</f-note>
+
+
+<h3 id=navigation>Navigation</h3>
+
+
+<h2 id=history>Justification</h2>
+
+<p>
+CRUD not complete
+
+<p>
+Let you use routers better
+
+<p>
+Many server frameworks support it
+
+<p>
+Encourage HTML writing
+
+<p>
+Encourage same-origin (and other security stuff)
+
+<p>
+Lots of perf gains to be had with better HTTP method use
+
+caching?
+
 <h2 id=history>History</h2>
 
+
+<h2 id=alternatives>Alternatives and Optional Proposals</h2>
+<h3 id=delete-bodyies>Optional: DELETE request bodies</h3>
+<p>
+There's no inherent reason why a DELETE request couldn't send body content, and many popular
+frameworks, like ExpressJS, do support it. Nor is DELETE content expressly prohibited by the spec,
+which allows for such requests if the origin server has indicated that it supports them.
+Since most HTML forms are same-origin, it could sense to allow the form to indicate that it would be
+fine with DELETE content,
+
+<p>
+A <code>usebody</code> attribute could be included to indicate support. If present, the form
+would send its data as part of the body, for DELETE (or GET) requests; it would be ignored for all
+other methods.
 
 <section class=footnotes>
 <h2 id=footnotes>Footnotes</h2>
@@ -235,14 +328,36 @@ class Footnote extends HTMLElement {
 
 customElements.define('f-note', Footnote)
 
+// Create footnotes
 const footnotesSection = document.querySelector('section.footnotes')
 const footnotes = document.querySelectorAll('f-note')
-
 for (footnote of footnotes) {
   const p = document.createElement('p')
+  p.classList.add('footnote')
   p.id = `ref-${footnote.num}`
   p.innerHTML = `[${footnote.num}] ${footnote.content} <a href="#fn-${footnote.num}">↩</a>`
   footnotesSection.append(p)
 }
 
+// Create table of contents
+const toc = document.querySelector('details.toc')
+const headings = document.querySelectorAll('h2,h3')
+const topList = document.createElement('ol')
+let currentH2
+for (heading of headings) {
+  if (heading.tagName === 'H2') {
+    currentH2 = document.createElement('li')
+    currentH2.innerHTML = `<a href="#${heading.id}">${heading.innerText}</a><ol></ol>`
+    topList.append(currentH2)
+  } else {
+    const h2Sublist = currentH2.querySelector('ol')
+    const h3Item = document.createElement('li')
+    h3Item.innerHTML = `<a href="#${heading.id}">${heading.innerText}</a><ol></ol>`
+    h2Sublist.append(h3Item)
+  }
+}
+toc.append(topList)
+
 </script>
+
+<!-- https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.4-10 -->
