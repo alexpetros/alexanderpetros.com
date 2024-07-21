@@ -134,8 +134,8 @@ Proposal 1/3 in the <a href=/triptych>Triptych Proposals</a>.
 PUT, PATCH, and DELETE support in forms should:
 
 <ul>
+  <li>be the path of least friction for developing RESTful web services
   <li>integrate seamlessly with existing form semantics
-  <li>be easier than implementing the same functionality in JavaScript
   <li>integrate with existing servers and frameworks that support those methods
   <li>not introduce new security considerations
 </ul>
@@ -153,57 +153,140 @@ New values for the form <code>method</code> attribute:
 All new method keywords are case insensitive.
 Existing form controls (e.g. <code>action</code>, <code>enctype</code>) should operate identically.
 
-<h2 id=sample-usage>Sample Usage</h2>
+<h2 id=sample-usage>Sample Usage in Resource Lifecycle</h2>
 
+This section demonstrates how PUT and DELETE methods are necessary for managing the lifecycle of a
+resource. We use as an example a hypothetical hotel reservation service, in which users have the
+ability to book hotel rooms.
+
+<p>
 All examples in this section assume that the host origin is https://example.com.
 
-<h3 id=basic-put-form>Updating A Resource</h3>
+<h3 id=basic-create-form>Creating A Resource</h3>
+
+First, the user makes a reservation using a traditional POST form:<f-note>While PUT is capable of
+creating new resources, POST is preferred when the service
+<q><a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.4-10">selects a proper URI on
+behalf of the client.</a></q> This is the simplest RESTful pattern, and has the additional
+benefit of using a non-idempotent method, so the browser can guard against double reservations.
+More benefits to using this pattern will be discussed in the justifications section.
+</f-note>
 
 <code>
 <pre class=code>
-&lt;form action="/users/45" method="PUT"&gt;
+&lt;form action="/reservations" method="POST"&gt;
   &lt;input type="text" name="name"&gt;
-  &lt;input type="email" name="email"&gt;
+  &lt;input type="date" name="check-in"&gt;
+  &lt;input type="date" name="check-out"&gt;
+  &lt;input type="checkbox" name="has-pets"&gt;
   &lt;button&gt;Submit&lt;/button&gt;
 &lt;/form&gt;
 </pre>
 </code>
 
-If the user enters "Alex Petros" as the name and "contact@alexpetros.com" as the email, it will
-result in the follow HTTP request:
+The browser will send the following HTTP request:
 
 <code>
 <pre class=code>
-PUT /user/45 HTTP/1.1
+POST /reservations HTTP/1.1
 Host: example.com
 Content-Type: application/x-www-form-urlencoded
 ...
-name=Alex%20Petros&email=contact
+name=Alex%20Petros&check-in=2024-12-01&check-out=2024-12-02&has-pets=on
+</pre>
+</code>
+
+And the server responds with a redirect to the newly-created reservation resource:<f-note>The
+<a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.4-1">303 SEE OTHER</a> status code is
+used here because it directs the agent to make the subsequent request as GET, regardless of what
+method the original request used. 302 FOUND does not do this this, but for historical reasons,
+browsers <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.3-3.1">typically change POST
+to GET</a>, while leaving PUT, PATCH, and DELETE methods as is. For this reason, we use 303 for
+everything.
+</f-note>
+
+<code>
+<pre class=code>
+HTTP/1.1 303 SEE OTHER
+Location: /reservations/123
 </pre>
 </code>
 
 
-<h3 id=basic-put-form>Deleting A Resource</h3>
+<h3 id=basic-put-form>Updating A Resource</h3>
+
+<p>
+At the reservation page, the user is presented with two forms. The first one allows them to adjust
+their reservation:
 
 <code>
 <pre class=code>
-&lt;form action="/users/45" method="DELETE"&gt;
+&lt;form action="/reservations/123" method="PUT"&gt;
+  &lt;input type="text" name="name" value="Alex Petros"&gt;
+  &lt;input type="date" name="check-in" value="2024-12-01"&gt;
+  &lt;input type="date" name="check-out" value="2024-12-02"&gt;
+  &lt;input type="checkbox" name="has-pets" checked&gt;
   &lt;button&gt;Submit&lt;/button&gt;
 &lt;/form&gt;
 </pre>
 </code>
 
-Clicking submit would result in the following HTTP request:
+This new form offers the same controls as the POST form, but with some key differences:
+
+<ul>
+  <li>The action has changed from <code>/reservations</code> to <code>/reservations/123</code>
+  <li>The method has changed from <code>POST</code> to <code>PUT</code>
+  <li>The forms are pre-filled with the values saved at the server.
+</ul>
+
+<p>
+By presenting the user with both the current application state (the form values) and possible
+actions on that state (the input types and submit button), HTML is able to fulfill its duty as a
+uniform interface.<f-note>
+This is sometimes called Hypertext as the Engine of Application State
+(<a href="https://htmx.org/essays/hateoas/">HATEOAS</a>).
+</f-note>
+
+<p>
+If the user changes the check-out date to <code>2024-12-03</code>, the browser will send the
+following request:
 
 <code>
 <pre class=code>
-DELETE /user/45 HTTP/1.1
+PUT /reservations/123 HTTP/1.1
 Host: example.com
+Content-Type: application/x-www-form-urlencoded
 ...
-name=alex%20petros&email=contact
+name=Alex%20Petros&check-in=2024-12-01&check-out=2024-12-03&has-pets=on
 </pre>
 </code>
 
+The server can then choose to either send back a new page or redirect to one.
+
+<h3 id=basic-delete-form>Deleting A Resource</h3>
+
+The second form on the reservation page allows the user to delete their reservation:
+
+<code>
+<pre class=code>
+&lt;form action="/reservations/123" method="DELETE"&gt;
+  &lt;button&gt;Delete Reservation&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</code>
+
+Clicking "Delete Reservation" would result in the following HTTP request:
+
+<code>
+<pre class=code>
+DELETE /reservations/123 HTTP/1.1
+Host: example.com
+</pre>
+</code>
+
+And the server could choose to either send a delete confirmation page, or redirect elsewhere.
+
+<!-- <h3 id=hateoas>Completing Hypertext</h3> -->
 
 <h2 id=considerations>Additional Considerations</h2>
 <h3 id=body-content>Body Content</h3>
@@ -272,7 +355,7 @@ PUT and DELETE responses are never cacheable.<f-note>
 <h2 id=history>Justification</h2>
 
 <p>
-CRUD not complete
+CRUD not complete; uniform interface not complete
 
 <p>
 Let you use routers better
