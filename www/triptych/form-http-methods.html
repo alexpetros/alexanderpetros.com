@@ -18,7 +18,7 @@
 
 </dl>
 
-<details class=toc>
+<details class=toc open>
 <summary>Table of Contents</summary>
 <noscript>
   The table of contents is generated with JavaScript, which you have disabled.
@@ -564,16 +564,18 @@ semantics of both.
 
 <p>
 In addition to minor inconveniences like making it more cumbersome to filter logs,
-the larger impact of this is to unmoor the developer from any kind of consistent semantics.
+the greater impact of this is to unmoor the developer from any kind of consistent semantics.
 The standardized HTTP methods guide the developer to a clear and consistent pattern.
 If the developer is not presented with a consistent set of common verbs for common tasks, they are
 liable to invent their own. Why shouldn't <code>/put</code> be <code>/create</code>, or
 <code>/delete</code> be <code>/remove</code>?<f-note>
 You might reasonably wonder why this is bad, when earlier we discussed how interesting
 opportunities that would be available if methods were entirely arbitrary. The answer is: because
-using the method slot gives the user agent important dimensions upon which to . When extensions like these are tried out in the method slot, the
-client can choose to optimize them if they are recognized—like trusting the idempotence or GET or
-PUT—or fallback to a baseline behavior if they are not.
+telling the user agent what the method is lets it pilot new features and be resilient to ones it
+doesn't understand. When extensions like these are tried out in the method slot, the client can
+choose to optimize them if they are recognized—like trusting the idempotence or GET or PUT—or
+fallback to a baseline behavior if they are not. Of course, HTTP <em>already</em> has features that
+differentiate GET, POST, PUT, and DELETE, so the question of whether browsers might build features around those is not theoretical—they already do.
 </f-note>
 
 <p>
@@ -588,12 +590,22 @@ to augment or abandon HTML rather than throw out URI semantics along with them.
 <!-- Without proper method support, -->
 
 
+<h4>REST support in Frameworks</h4>
+
+<div class=notice>Pretty much everything after this is still unfinished</div>
+
+<p>
+Demonstrate the overwhelming PUT/DELETE support in existing server-side
+
+<p>
+Maybe something about the client-side framework support as well
 
 <h3>Software Design on the Scale of Decades</h3>
 
+
 <p>
-If REST is so cumbersome to implement in HTML, perhaps the fault lies not with HTML, but with REST.
-What if REST served as a useful guideline for the early days of the web, but is no longer up to the
+If REST is so cumbersome to implement in HTML, what if the fault lies not with HTML, but with REST.
+Perhaps REST served as a useful guideline for the early days of the web, but is no longer up to the
 demands of modern web applications? This is not so.
 
 <p>
@@ -601,10 +613,13 @@ REST outlines a powerful framework for building durable, distributed hypermedia 
 web platform.
 
 <p>
-The inclusion of proper REST facilities makes REST the easier and simplest thing to do
+The inclusion of proper REST facilities in HTML makes REST the easier and simplest thing to do
 
+<p>
+This would cement the web as the dominant infrastructure platform for essential services, were
+reliability and accessibility are prized above all else.
 
-<h2>Justifications</h2>
+<h2>Additional Benefits</h2>
 Prior variations on this proposal failed to generate the necessary traction to get implemented,
 which burdens the concept with considerable inertia.<f-note>
 Citation needed.
@@ -643,18 +658,17 @@ Lots of perf gains to be had with better HTTP method use
 caching?
 
 
-<h3>Client frameworks</h3>
-
-
 <h2>History</h2>
 
 
 <h2>Alternatives and Optional Proposals</h2>
-<h3 id=delete-bodyies>Alternative: Omit PATCH</h3>
+<h3>Alternative: Omit PATCH</h3>
 <p>
 PUT and DELETE are necessary to include a full REST grammar in HTML; PATCH is not.
 
-<h3 id=delete-bodyies>Optional: DELETE request bodies</h3>
+<h3>Optional: Allow Cross-Origin Requests with CORS</h3>
+
+<h3>Optional: DELETE request bodies</h3>
 <p>
 There's no inherent reason why a DELETE request couldn't send body content, and many popular
 frameworks, like ExpressJS, do support it. Nor is DELETE content expressly prohibited by the spec,
@@ -667,94 +681,10 @@ A <code>usebody</code> attribute could be included to indicate support. If prese
 would send its data as part of the body, for DELETE (or GET) requests; it would be ignored for all
 other methods.
 
-<h2>Appendix</h2>
 
-<h3>Rest History</h3>
-<p>
-Representational State Transfer (REST) was developed as guiding framework for the already-existing
-and evolving World Wide Web, and first defined in Roy Fielding's dissertation, <cite>Architectural Styles and the Design of Network-based Software Architectures.</cite>
-He <a
-href="https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm#sec_5_1_5">defines
-REST</a> as comprising four interface constraints:
-
-<ul>
-  <li>Identification of resources
-  <li>Manipulation of resources through representations
-  <li>Self-descriptive messages
-  <li>Hypermedia as the Engine of Application State (HATEOAS)
-</ul>
-
-<p>
-These constraints describe an idealized web application and provide a framework for
-how the web platform should grow in order to preserve and enhance its performance as a distributed
-hypermedia system.<f-note>
-We are in agreement with Fielding that there are other applications of the web platform besides
-distributed hypermedia (games, for instance), but that distributed hypermedia remains the standard
-around which the web should be optimized.
-</f-note> To that end, each constraint describes a core feature of the web platform: A URI
-identifies resources; HTML represents and (describes how the client can) manipulates resources; HTTP
-messages self-describe via metadata; and when these concepts are properly implemented, the web
-  application is using HATEOAS.<f-note>
-Despite HATEOAS being one of the four interface constraints that define REST, Fielding never brings
-it up again in the dissertation, except, possibly, when <a href="The model application is therefore an engine that moves from one state to the next by examining and choosing from among the alternative state transitions in the current set of representations.">he says</a>: <q>The model application is therefore an engine that moves from one state to the next by examining and choosing from among the alternative state transitions in the current set of representations.</q>
-</f-note>
-
-<p>
-Consider this truncated version of the sample form in Section 3.1:
-
-<code>
-<pre class=code>
-&lt;form action="/reservations/123" method="PUT"&gt;
-  &lt;input type="date" name="check-in" value="2024-12-01"&gt;
-  &lt;input type="date" name="check-out" value="2024-12-02"&gt;
-  &lt;button&gt;Submit&lt;/button&gt;
-&lt;/form&gt;
-</pre>
-</code>
-
-<!-- Together, these attributes are a complete -->
-<!-- representation of the reservation, represented with HTML, the uniform interface. -->
-<!-- ; they demonstrate hypertext as the -->
-<!-- engine of the application state (HATEOAS).<f-note></f-note> -->
-
-<p>
-Here, the reservation is identified by the URI <code>/reservations/123</code>, the reservation is
-represented by the values in the form inputs, and one way that reservation can be manipulated is
-described by the input types and the form itself.
-
-The mode is significant because it slots semnantic HTTP Method use as a distinct step in achieving
-REST.
-
-<p>
-Fielding
-
-self-describing semantics includes methods
-
-what a method does is up to the server
-
-<p>
-REST describes an ideal hypermedia application, but it does not help us categorize the various ways
-in which existing web applications do and do not meet its constraints. In a 2008 talk at QCon,
-Leonard Richardson proposed <a href="https://www.crummy.com/writing/speaking/2008-QCon/act3.html">a maturity heuristic for REST,</a> which Marin Fowler later rebranded as
-"<a href="https://martinfowler.com/articles/richardsonMaturityModel.html#level2">The Richardson
-Maturity Model</a>." The specifics of this model are beside the point
-
-<p>
 
 <!-- Within this framework, we can understand HTTP methods as part of the manipulation semantics; they -->
 <!-- signify how the enclosed representation is to be processed. -->
-
-
-
-In the dissertation, Fielding describes
-how HTTP methods are designed to be extensible, and
-
-<p>
-Fielding's position seems to be that the client should be entirely agnostic to what a POST is; it
-just matters that the server know and cares. This would ideally support entirely arbitrary methods.
-
-
-
 
 <section class=footnotes>
 <h2>Footnotes</h2>
