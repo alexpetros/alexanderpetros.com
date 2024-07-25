@@ -68,6 +68,7 @@ All examples in this section assume that the host origin is https://example.com.
 
 <h3 id=basic-create-form>Creating A Resource</h3>
 
+<p>
 First, the user makes a reservation using a traditional POST form:<f-note>While PUT is capable of
 creating new resources, POST is preferred when the service
 <q><a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.4-10">selects a proper URI on
@@ -75,8 +76,8 @@ behalf of the client.</a></q> This is the simplest RESTful pattern, and has the 
 benefit of using a non-idempotent method, so the browser can guard against double reservations.
 More benefits to using this pattern will be discussed in the justifications section.
 </f-note>
+</p>
 
-<code>
 <pre class=code>
 &lt;form action="/reservations" method="POST"&gt;
   &lt;input type="text" name="name"&gt;
@@ -86,11 +87,9 @@ More benefits to using this pattern will be discussed in the justifications sect
   &lt;button&gt;Submit&lt;/button&gt;
 &lt;/form&gt;
 </pre>
-</code>
 
 The browser will send the following HTTP request:
 
-<code>
 <pre class=code>
 POST /reservations HTTP/1.1
 Host: example.com
@@ -98,18 +97,17 @@ Content-Type: application/x-www-form-urlencoded
 ...
 name=Alex%20Petros&check-in=2024-12-01&check-out=2024-12-02&has-pets=on
 </pre>
-</code>
 
 And the server responds with a redirect to the newly-created reservation resource:<f-note>
 The <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.4-1">303 SEE OTHER</a> status code is used here because it directs the agent to make the subsequent request as GET, regardless of what method the original request used. 302 FOUND does not do this this, but for historical reasons, browsers <a href="https://www.rfc-editor.org/rfc/rfc9110#section-15.4.3-3.1">typically change POST to GET</a>, while leaving PUT, PATCH, and DELETE methods as is. For this reason, we use 303 for everything.
 </f-note>
 
-<code>
+
 <pre class=code>
 HTTP/1.1 303 SEE OTHER
 Location: /reservations/123
 </pre>
-</code>
+
 
 
 <h3 id=basic-put-form>Updating A Resource</h3>
@@ -118,7 +116,7 @@ Location: /reservations/123
 At the reservation page, the user is presented with two forms. The first one allows them to adjust
 their reservation:
 
-<code>
+
 <pre class=code>
 &lt;form action="/reservations/123" method="PUT"&gt;
   &lt;input type="text" name="name" value="Alex Petros"&gt;
@@ -128,7 +126,7 @@ their reservation:
   &lt;button&gt;Submit&lt;/button&gt;
 &lt;/form&gt;
 </pre>
-</code>
+
 
 This new form offers the same controls as the POST form, but with some key differences:
 
@@ -142,7 +140,7 @@ This new form offers the same controls as the POST form, but with some key diffe
 If the user changes the check-out date to <code>2024-12-03</code>, the browser will send the
 following request:
 
-<code>
+
 <pre class=code>
 PUT /reservations/123 HTTP/1.1
 Host: example.com
@@ -150,7 +148,7 @@ Content-Type: application/x-www-form-urlencoded
 ...
 name=Alex%20Petros&check-in=2024-12-01&check-out=2024-12-03&has-pets=on
 </pre>
-</code>
+
 
 The server can then choose to either send back a new page or redirect to one.
 
@@ -158,22 +156,22 @@ The server can then choose to either send back a new page or redirect to one.
 
 The second form on the reservation page allows the user to delete their reservation:
 
-<code>
+
 <pre class=code>
 &lt;form action="/reservations/123" method="DELETE"&gt;
   &lt;button&gt;Delete Reservation&lt;/button&gt;
 &lt;/form&gt;
 </pre>
-</code>
+
 
 Clicking "Delete Reservation" would result in the following HTTP request:
 
-<code>
+
 <pre class=code>
 DELETE /reservations/123 HTTP/1.1
 Host: example.com
 </pre>
-</code>
+
 
 And the server could choose to either send a delete confirmation page, or redirect elsewhere.
 

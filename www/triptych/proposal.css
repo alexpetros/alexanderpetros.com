@@ -91,7 +91,8 @@ summary:hover {
 }
 
 pre.code {
-  overflow: wrap;
+  font-family: Monospace;
+  overflow: auto;
   background-color: lightgray;
   padding: 10px;
 }
