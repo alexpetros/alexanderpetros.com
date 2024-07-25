@@ -2,115 +2,7 @@
 <title>Support PUT, PATCH, and DELETE in HTML Forms</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-:root {
-  --page-background: white;
-  --header-color: #039;
-}
-
-html {
-  scrollbar-gutter: stable;
-}
-
-body {
-  background-color: var(--page-background);
-  font-family: Verdana;
-  margin: 20px auto;
-  max-width: 900px;
-  padding: 0 20px;
-  line-height: 1.3;
-}
-
-h1, h2, h3, h4 {
-  color: var(--header-color);
-  font-weight: normal;
-}
-
-h1 {
-  counter-reset: header-count;
-}
-
-h2 {
-  counter-reset: subheader-count;
-}
-
-h2::before {
-  counter-increment: header-count;
-  content: counter(header-count) '. ';
-}
-
-h3 {
-  counter-reset: subsubheader-count;
-}
-
-
-h3::before {
-  counter-increment: subheader-count;
-  content: counter(header-count) '.' counter(subheader-count) '. ';
-}
-
-h4::before {
-  counter-increment: subsubheader-count;
-  content: counter(header-count) '.' counter(subheader-count) '.' counter(subsubheader-count) '. '
-}
-
-
-dt {
-  font-weight: bold;
-}
-
-a:visited {
-  color: blue;
-}
-
-details {
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  padding: 0.5em 0.5em 0;
-}
-
-details[open] summary {
-  border-bottom: 1px solid #aaa;
-  margin-bottom: 0.5em;
-}
-
-summary {
-  font-weight: bold;
-  user-select: none;
-  margin: -0.5em -0.5em 0;
-  padding: 0.5em;
-}
-
-summary:hover {
-  background-color: lightgray;
-}
-
-ol {
-  counter-reset: toc-count;
-  list-style-type: none;
-}
-
-ol li::before {
-  counter-increment: toc-count;
-  content: counters(toc-count, '.', decimal) '. ';
-}
-
-pre.code {
-  overflow: wrap;
-  background-color: lightgray;
-  padding: 10px;
-}
-
-p.footnote {
-  background-color: var(--page-background);
-  padding: 5px 0;
-}
-
-p.footnote:target {
-  background-color: yellow;
-}
-
-</style>
+<link rel="stylesheet" href="/triptych/proposal.css">
 
 <h1>Support PUT, PATCH, and DELETE in HTML Forms</h1>
 
@@ -413,8 +305,8 @@ though JSON is not hypertext. Roy Fielding is less polite: in <cite class="artic
 <p>
 Despite the misconceptions, REST remains the most powerful conceptual tool for building durable
 hypermedia applications.
-In this section, we make the case for how better method support in HTML has the potential to
-drive adoption of REST priciples and dramatically improve the median web application as a result.
+In this section, we make the case for how better method support in HTML can drive adoption of REST
+priciples and dramatically improve the median web application as a result.
 
 <!-- This explanation draws on his references to it in his , and Carson Gross' <a href="https://htmx.org/essays/hateoas/">"alternative -->
 <!-- explanation"</a> of the term. -->
@@ -440,12 +332,12 @@ method field.<f-note>
 <p>
 Fielding actually appears to be somewhat ambivalent about whether the client should have
 <em>any</em> understanding of method semantics. He doesn't say too much more about HTTP methods in
-the dissertation, and in a comment on his blog, he writes:
+the dissertation, but in a comment on his blog, he writes:
 
 <blockquote>
 <q>You don’t get to decide what POST means — that is decided by the resource. Its purpose is
 supposed to be described in the same context in which you found the URI that you are posting to.</q><f-note>
-<a href="https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven">"Rest APIs Must be
+<a href="https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven#comment-732">"Rest APIs Must be
   Hypertext Driven"</a>, Comment #13
 </f-note>
 </blockquote>
@@ -459,7 +351,7 @@ Since REST was designed to describe an infrastructure in which some HTTP methods
   request"</a>, which suggests a willingness to include agreed-upon method semantics within the
 confines of a "self-describing" API.
 </f-note>
-HTML's transformation of any non-GET, non-POST method into a GET violates this principle.<f-note>
+The HTML form element's transformation of any non-GET, non-POST method into a GET violates this principle.<f-note>
 n.b. Fielding's <a
 href="https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven">"REST APIs must be
 hypertext-driven" blog</a> does include the follow bullet:
@@ -507,17 +399,203 @@ what we essentially have in HTTP is GET and POST standing in for safe and unsafe
 respectively.
 </f-note>
 
+<ol start=0>
+  <li>Using HTTP
+  <li>Using resource URIs
+  <li>Using HTTP verbs (methods)
+  <li>Responding with hypermedia
+</ol>
+
 <p>
 The increased salience of HTTP methods to REST is not a perversion of the concept,
 but a practical evolution of it, born from real-world use.
-What aspirational REST adherents have discovered is that if URIs identify a resource and HTML
-describes modifications on that resource, then it is incredibly helpful to have a standardized
-semantic for to describe <em>how</em> the resource is to be modified.
-The usefulness of methods as an HTTP semantic—a priori to the semantics of the methods themselves—is
-so self-evident that the hypertext transfer protocol has long standardized additional methods; all
-that remains is for the dominant hypertext markup to support them.
+Aspirational REST adherents have discovered that it is incredibly helpful to have a
+standardized semantic for to describe <em>how</em> the resource is to be modified.
 
-<h3>RESTing on the Cowpaths</h3>
+<p>
+For instance, this overview is from the first API tutorial in the latest ASP.NET Core documentation:<f-note>
+<a
+  href="https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio">Tutorial:
+  Create a web API with ASP.NET Core</a>; interestingly, this tutorial doesn't even mention REST,
+although it does link to another page describing RESTful APIs.
+</f-note>
+
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Description</th>
+<th>Request body</th>
+<th>Response body</th>
+</tr>
+</thead>
+
+<tr>
+<td><code>GET /api/todoitems</code></td>
+<td>Get all to-do items</td>
+<td>None</td>
+<td>Array of to-do items</td>
+</tr>
+<tr>
+<td><code>GET /api/todoitems/{id}</code></td>
+<td>Get an item by ID</td>
+<td>None</td>
+<td>To-do item</td>
+</tr>
+<tr>
+<td><code>POST /api/todoitems</code></td>
+<td>Add a new item</td>
+<td>To-do item</td>
+<td>To-do item</td>
+</tr>
+<tr>
+<td><code>PUT /api/todoitems/{id}</code></td>
+<td>Update an existing item &nbsp;</td>
+<td>To-do item</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>DELETE /api/todoitems/{id}</code> &nbsp; &nbsp;</td>
+<td>Delete an item &nbsp; &nbsp;</td>
+<td>None</td>
+<td>None</td>
+</tr>
+
+</table>
+
+<p>
+This how most developers understand REST: a service is RESTful if it uses methods and URIs to describe what <strong>action</strong> you're taking on what <strong>resource</strong>.
+But if you look closely, you'll notice that it's not REST: the API returns JSON data, not hypermedia. The popular conception of REST is stuck at Level 2 of the Richardson Maturity Model.
+
+<!-- in HTML, Level 2 and Level 3 are mutually exclusive. -->
+
+<p>
+Developers break down their APIs this way, in spite of insufficient HTML support, because it's
+simpler.
+An API that supports <code>PUT /users/123</code> and <code>DELETE /users/123</code> is easier to
+describe than a <code>POST /users/123</code> API that has certain body semantics that alter whether
+it will update or delete the resource described.
+
+<p>
+The usefulness of methods as an HTTP semantic—a priori to the semantics of the methods
+themselves—is so self-evident that the hypertext transfer protocol has long standardized a bunch of
+additional methods; all that remains is for the dominant hypertext markup to support them.
+
+<h3>Ecosystem Demand</h3>
+
+Lacking proper browser support, developers still consider method semantics important enough to their
+API design that they come up with ad-hoc methods to achieve the same result.
+
+<h4>The hidden input hack</h4>
+
+<p>
+The most common way that developers compensate for the lack of proper HTTP method support is to
+include a hidden input that overrides the method. This pattern is so common that it is supported by
+a variety of server-side frameworks.<f-note>
+Citation needed.
+</f-note>
+
+<code>
+<pre class="code">
+&lt;form method="post" action="/users/123"...&gt;
+  &lt;input type="hidden" name="_method" value="put"&gt;
+  ...
+&lt;/form&gt;
+
+&lt;form method="post" action="/users/123"...&gt;
+  &lt;input type="hidden" name="_method" value="delete"&gt;
+  ...
+&lt;/form&gt;
+</pre>
+</code>
+
+<p>
+This would be a Level 1 on the Richardson Maturity Model. The URIs consistently identify a
+resource (<code>user/123</code>), but the method is always POST, so the verbs aren't in use.
+
+<p>
+This pattern has a number of drawbacks that would be rectified by proper PUT, PATCH, and DELETE
+support:<f-note>
+These points are not new; many of them were made by Mike Amundsen in the closed
+<a href="https://www.w3.org/Bugs/Public/show_bug.cgi?id=10671#c4">WHATWG Bug 10671</a>.
+</f-note>
+
+<ul>
+  <li>Unlike POST, PUT and DELETE are idempotent, which gives the client more leeway to recover
+    from network failures
+  <li>HTTP methods are typically logged while HTTP bodies are not; services that break up their
+    unsafe requests across POST, PUT, and DELETE have a smaller surface to debug than ones where all
+    unsafe request are tunneled through POST.
+  <li>HTTP methods are a powerful filtering tool for debugging across the stack—server logs,
+    application logs, and the browser network tab.
+  <li>Routing is fundamental to server logic, and including an additional variable for routing
+    dramatically simplifies the server logic that would otherwise have to compensate by performing
+    additional routing imperatively.
+</ul>
+
+<h4>Ad-hoc URI semantics</h4>
+
+<p>
+Another workaround is to encode the method semantics straight into the URI.
+<code>
+<pre class="code">
+&lt;form method="post" action="/users/123/put"...&gt;
+  ...
+&lt;/form&gt;
+
+&lt;form method="post" action="/users/123/delete"...&gt;
+  ...
+&lt;/form&gt;
+</pre>
+</code>
+
+
+<p>
+This actually resolves some of the operational issues with the hidden input hack. The different
+actions are visible to the transport layer (although in a slightly harder-to-parse location than the
+proper method field), and server routers can easily declare separate handlers for each action.
+
+<p>
+But it is certainly not REST. In fact, it regresses on the Richardson Maturity Model from even the
+hidden input hack, all the way back down to 0.
+Where the hidden input at least used URIs to identify resources, now the URIs don't even represent
+resources anymore; they represent a combination of resource and method, mixing the
+semantics of both.
+
+<p>
+In addition to minor inconveniences like making it more cumbersome to filter logs,
+the larger impact of this is to unmoor the developer from any kind of consistent semantics.
+The standardized HTTP methods guide the developer to a clear and consistent pattern.
+If the developer is not presented with a consistent set of common verbs for common tasks, they are
+liable to invent their own. Why shouldn't <code>/put</code> be <code>/create</code>, or
+<code>/delete</code> be <code>/remove</code>?<f-note>
+You might reasonably wonder why this is bad, when earlier we discussed how interesting
+opportunities that would be available if methods were entirely arbitrary. The answer is: because
+using the method slot gives the user agent important dimensions upon which to . When extensions like these are tried out in the method slot, the
+client can choose to optimize them if they are recognized—like trusting the idempotence or GET or
+PUT—or fallback to a baseline behavior if they are not.
+</f-note>
+
+<p>
+The obvious smell of this pattern, when placed next to the actual HTTP methods, leads developers to
+conclude, correctly, that the missing methods limitation is endogenous to HTML, and the solution is
+to augment or abandon HTML rather than throw out URI semantics along with them.
+
+<!-- <p> -->
+<!-- Lacking PUT and DELETE, hypermedia doesn't support this paradigm, but JavaScript (with the fetch -->
+<!-- API) does. -->
+<!-- So developers -->
+<!-- Without proper method support, -->
+
+
+
+<h3>Software Design on the Scale of Decades</h3>
+
+<p>
+If REST is so cumbersome to implement in HTML, perhaps the fault lies not with HTML, but with REST.
+What if REST served as a useful guideline for the early days of the web, but is no longer up to the
+demands of modern web applications? This is not so.
+
 <p>
 REST outlines a powerful framework for building durable, distributed hypermedia applications on the
 web platform.
@@ -564,56 +642,6 @@ Lots of perf gains to be had with better HTTP method use
 
 caching?
 
-<h2>Ecosystem Demand</h2>
-
-<h3>The hidden input hack</h3>
-
-<p>
-The most common way that developers compensate for the lack of proper HTTP method support is to
-include a hidden input that overrides the method. This pattern is so common that it is supported by
-a variety of server-side frameworks.<f-note>
-Citation needed.
-</f-note>
-
-<code>
-<pre class="code">
-&lt;form method="post" ...&gt;
-  &lt;input type="hidden" name="_method" value="put"&gt;
-  ...
-&lt;/form&gt;
-</pre>
-</code>
-
-<p>
-This pattern has a number of drawbacks that would be rectified by proper PUT, PATCH, and DELETE
-support:<f-note>
-These points are not new; many of them were made by Mike Amundsen in the closed
-<a href="https://www.w3.org/Bugs/Public/show_bug.cgi?id=10671#c4">WHATWG Bug 10671</a>.
-</f-note>
-
-<ul>
-  <li>Unlike POST, PUT and DELETE are idempotent, which gives the client more leeway to recover
-    from network failures
-  <li>HTTP methods are typically logged while HTTP bodies are not; services that break up their
-    unsafe requests across POST, PUT, and DELETE have a smaller surface to debug than ones where all
-    unsafe request are tunneled through POST.
-  <li>HTTP methods are a powerful filtering tool for debugging across the stack—server logs,
-    application logs, and the browser network tab.
-  <li>Routing is fundamental to server logic, and including an additional variable for routing
-    dramatically simplifies the server logic that would otherwise have to compensate by performing
-    additional routing imperatively.
-</ul>
-
-<h3>Ad-hoc semantics</h3>
-
-<p>
-Various other workarounds share most of these disadvantages.
-
-<p>
-/123/delete
-
-<p>
-POST /123
 
 <h3>Client frameworks</h3>
 
