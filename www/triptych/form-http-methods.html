@@ -675,7 +675,7 @@ If the developer is not presented with a consistent set of common verbs for comm
 Why shouldn't <code>/put</code> be <code>/create</code>, or <code>/delete</code> be <code>/remove</code>?<f-note>
 You might reasonably wonder why this is bad, when earlier we discussed how interesting opportunities that would be available if methods were entirely arbitrary.
 The answer is: because telling the user agent what the method is lets it pilot new features and be resilient to ones it doesn't understand.
-When extensions like these are tried out in the method slot, the user agent can choose to optimize them if they are recognized—like trusting the idempotence or GET or PUT—or
+When extensions like these are tried out in the method slot, the user agent can choose to optimize them if they are recognized—like trusting the idempotence of GET or PUT—or
 fallback to a baseline behavior if they are not.
 Of course, HTTP <em>already</em> has features that differentiate GET, POST, PUT, and DELETE, so the question of whether browsers might build features around those is not theoretical—they already do.
 </f-note>
