@@ -218,7 +218,7 @@ So it would be good to clarify that PUT and DELETE, when being redirected by 301
 
 <p>
 If the response redirects to a server of the same origin, the browser should directly issue the request.
-For behavior when the response redirects to a server of a different origin, see <section-ref ref=security-profile>Security Profile</section-ref>.
+For behavior when the response redirects to a server of a different origin, see <section-ref ref=Security-Profile>Security Profile</section-ref>.
 
 <h3 id=body-content>Body Content</h3>
 
@@ -329,7 +329,7 @@ For PATCH requests, which are not idempotent, the user agent should behave as it
 For PUT and DELETE requests, which are idempotent, the user agent should resubmit the request.
 This allows servers to take advantage of the method semantics and create forms that users on unreliable connections can feel confident re-submitting.
 
-<h2 id=security-profile>Security Profile</h2>
+<h2 id=Security-Profile>Security Profile</h2>
 <h3>Client Capabilities</h3>
 <p>
 First and foremost, new browser features must not expose existing servers or users to new vulnerabilities, so adding new CORS-safelisted methods or headers is out of the question.
