@@ -288,7 +288,7 @@ PUT and DELETE responses are never cacheable.<f-note>
 For same-origin requests, the browser should directly issue the request. For cross-origin requests, the browser should do the following:
 
 <ol>
-  <li>Issue a CORS preflight request to the URI at the <code>method</code> attribute.</li>
+  <li>Issue a CORS preflight request to the URI at the <code>action</code> attribute.</li>
   <li>If the server responds indicating that the request is not allowed, throw an error (visible to the user, in the same manner as an infinite redirect or bad certificate)</li>
   <li>Otherwise, issue the request.</li>
   <li>If the server responds with a redirect, issue a new CORS request
