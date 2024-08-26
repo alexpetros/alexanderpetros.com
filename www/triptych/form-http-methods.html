@@ -16,7 +16,7 @@
   <dt>Date Created</dt>
   <dd>August 17, 2024
   <dt>Last Updated</dt>
-  <dd>August 18, 2024
+  <dd>August 26, 2024
   <dt>Issue Tracker</dt>
   <dd><a href="https://github.com/whatwg/html/issues/3577#issuecomment-2294931398">WHATWG Issue #3577</a> </dd>
   <dt>Status</dt>
@@ -275,7 +275,8 @@ response to represent that resource.<f-note>
 <a href="https://www.rfc-editor.org/rfc/rfc5789#section-2">RFC 5789 Section 2</a>,
 </f-note> Browsers that implement this behavior for POST requests should do so for PATCH requests,
 although the spec notes that the overwhelming majority of cache implementations do not.<f-note>
-<a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.3-2">RFC 9110 Section 9.2.3</a>,
+  <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.3-2">RFC 9110 Section 9.2.3</a>
+</f-note>
 
 <p>
 PUT and DELETE responses are never cacheable.<f-note>
@@ -712,8 +713,6 @@ for HTTP methods.
     <a href="https://expressjs.com">
       Express
     </a>
-    </a>
-    </a>
   </td>
   <td>
     <a href="https://expressjs.com/en/4x/api.html#app">
@@ -1116,7 +1115,7 @@ If <code>POST /reservations/:reservationId</code> starts throwing internal serve
 
 <p>
 Also, deletes and updates might have different permissions associated with them!
-What if you want to implement group reservations, and give everyone in the group permission to edit the reservation, but only the own permission to delete it?
+What if you want to implement group reservations, and give everyone in the group permission to edit the reservation, but only the owner permission to delete it?
 The safest, simplest, and most secure way would be to have separate routes with separate permission functions, but since we're re-using one function for two actions, we don't have access to that.
 To accomplish that, we have to mess with the URI:
 
@@ -1152,30 +1151,69 @@ The network layers can log and track each of the actions at an appropriate level
 And most importantly, the purpose of the server is clear and legible to present and future maintainers.
 
 <h2>Alternatives and Additions</h2>
+
 <h3>Omit PATCH</h3>
 <p>
 PUT and DELETE are necessary to include a full CRUD grammar in HTML; PATCH is not.
 
 <p>
-If you are going to do the work to generalize the <code>&lt;form&gt;</code> method attribute anyway, it doesn't seem like there's huge benefit to omitting PATCH. Nevertheless, the proposal could mostly success in its goals without PATCH, since most RESTful design practices focus on PUT and DELETE.
+If you are going to do the work to generalize the <code>&lt;form&gt;</code> method attribute anyway, it doesn't seem like there's huge benefit to omitting PATCH. Nevertheless, the proposal could mostly succeed in its goals without PATCH, since most RESTful design practices focus on PUT and DELETE.
 
 <h3>Allow for DELETE request bodies</h3>
 <p>
-There's no inherent reason why a DELETE request couldn't send body content, and many popular
-frameworks, like ExpressJS, do support it. Nor is DELETE content expressly prohibited by the spec,
-which allows for such requests if the origin server has indicated that it supports them.
-Since most HTML forms are same-origin, it could make sense to allow the form to indicate that it would be
-fine with DELETE content,
+There's no inherent reason why a DELETE request couldn't send body content, and many popular frameworks, like ExpressJS, do support it.
+Nor is DELETE content expressly prohibited by the spec, which allows for such requests if the origin server has indicated that it supports them.
+Since most HTML forms are same-origin, it could make sense to allow the form to indicate that it would be fine with DELETE content.
 
 <p>
-A <code>usebody</code> attribute could be included to indicate support. If present, the form
-would send its data as part of the body, for DELETE (or GET) requests; it would be ignored for all
-other methods.
+A <code>usebody</code> attribute could be included to indicate support.
+If present, the form would send its data as part of the body, for DELETE (or GET) requests;
+it would be ignored for all other methods.
+
+<h3 id=override-method>Override Method</h3>
+<p>
+Currently, if <code>method</code> is set to an unrecognized method, the form will default to sending a GET form.
+If the author intended to send form data as body content, this has the regrettable side-effect of exposing that form data to the URL in the form of query parameters.
+This could cause information leakage—URLs are visible in plaintext in various context where request content is not.
+As long as browser support for the new methods remains a live concern, the possibility of information leakage will hinder adoption in sensitive contexts.<f-note>
+Thanks to <a href="https://github.com/whatwg/html/issues/3577#issuecomment-2303573521">@jlunman</a> for asking us to address this issue.
+</f-note>
+
+<p>
+At the same time, it is important to keep in mind this proposal's goals, which include integrating seamlessly with existing form semantics, and do not include driving a fast adoption timeline.
+This proposal is primarily concerned with bolstering HTML's ability to support hypermedia APIs that last;
+if it takes a couple of years before these APIs have sufficient support, that's a cost worth paying in exchange for decades of having a more intuitive API.
+
+<p>
+All that having been said, one way to alleviate short-term adoption concerns is to introduce a second attribute that overrides <code>method</code>.
+We propose <code>overridemethod</code> as the name for this method, but other names could be suitable.
+
+<pre class="code">
+&lt;form action="/reservations/123" method="POST" overridemethod="PUT"&gt;
+  &lt;input type="text" name="name"&gt;
+  &lt;button&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>
+In this example, browsers that support PUT and <code>overridemethod</code> would issue a PUT request to the specified action, while browsers that do not support those features would issue a POST request (servers would have to support both methods, of course).
+This would ensure that URL data leakage never occurs on older browsers, while automatically "upgrading" to the new method as browsers get upgraded.
+
+<h2>Update History</h2>
+
+<dl>
+  <dt> <time datetime="2024-08-26">August 26, 2024</time></dt>
+  <dd>
+    <ul>
+      <li>Added "Override Method" section
+    </ul>
+  </dd>
+</dl>
+
 
 <section class=footnotes>
 <h2>Footnotes</h2>
 </section>
-
 
 <script>
 // Create <section-ref> element
