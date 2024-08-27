@@ -158,10 +158,10 @@ The server can then choose to either send back a new page or redirect to one.
 <h3 id=basic-delete-form>Deleting A Resource</h3>
 
 The second form on the reservation page allows the user to delete their reservation:<f-note>
-In Bugzilla Issue #10671, <a href="https://www.w3.org/Bugs/Public/show_bug.cgi?id=10671#c16">Ian Hickson wrote</a>: <q>PUT as a form method makes no sense, you wouldn't want to PUT a form payload. DELETE only makes sense if there is no payload, so it doesn't make much sense with forms either.</q>.
+In Bugzilla Issue #10671, <a href="https://www.w3.org/Bugs/Public/show_bug.cgi?id=10671#c16">Ian Hickson wrote</a>: <q>PUT as a form method makes no sense, you wouldn't want to PUT a form payload. DELETE only makes sense if there is no payload, so it doesn't make much sense with forms either.</q>
 <br>
-While we disagree with this comment for the many of the same reasons that <a href="https://www.w3.org/Bugs/Public/show_bug.cgi?id=10671#c18">Cameron Jones</a> and <a href="https://www.w3.org/Bugs/Public/show_bug.cgi?id=10671#c21">Tom Wardrop</a> did originally, there is one limited sense in which Hickson's comment is correct: it doesn't make much sense to wrap a button in a form tag to issue a payload-less DELETE request.
-We address this limitation in <a href="#">Triptych Proposal #2: Button HTTP Requests</a>.
+While we disagree with this comment for the many of the same reasons that <a href="https://www.w3.org/Bugs/Public/show_bug.cgi?id=10671#c18">Cameron Jones</a> and <a href="https://www.w3.org/Bugs/Public/show_bug.cgi?id=10671#c21">Tom Wardrop</a> did originally, there is one limited sense in which Hickson's comment is correct: it doesn't make much sense that you have to wrap a button in a form tag to issue a payload-less DELETE request.
+We address this limitation in <a href="/triptych/button-requests">Triptych Proposal #2: Button HTTP Requests</a>.
 </f-note>
 
 
@@ -386,7 +386,7 @@ In 2000, Roy Fielding published a PhD dissertation in which he introduced the Re
 Transfer (REST) architectural style for distributed hypermedia systems.
 While these principles were used to guide the early development of the World Wide Web, they are
 often badly misunderstood.<f-note>
-Carson Gross notes in <a href="https://htmx.org/essays/hateoas/"><cite class=article>HATEOAS — An Alternative Explanation</cite></a> that the <a href="https://en.wikipedia.org/wiki/HATEOAS">Wikipedia Entry for "Hypertext as the engine of application state"</a>, one REST's fundamental constraints, uses a JSON API as an example, even though JSON is not hypertext.
+Carson Gross notes in <a href="https://htmx.org/essays/hateoas/"><cite class=article>HATEOAS — An Alternative Explanation</cite></a> that the <a href="https://en.wikipedia.org/wiki/HATEOAS">Wikipedia Entry for "Hypertext as the engine of application state"</a>, one of REST's fundamental constraints, uses a JSON API as an example, even though JSON is not hypertext.
 Roy Fielding is less polite: in <a href="https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven"><cite class=article>REST APIs must be hypertext-driven</cite></a>, he complains that a different "REST" API, which also did not user hypertext, has <q>so much coupling on display that it should be given an X rating.</q>
 </f-note>
 
@@ -598,7 +598,7 @@ The new lifecycle methods would make it possible for those applications to built
 Lacking proper browser support, developers still consider method semantics important enough to their
 API design that they come up with ad-hoc methods to achieve the same result.
 
-<h3>The Hidden Input Hack</h3>
+<h3 id=hidden-input-hack>The Hidden Input Hack</h3>
 
 <p>
 The most common way that developers compensate for the lack of proper HTTP method support is to
@@ -1170,7 +1170,7 @@ A <code>usebody</code> attribute could be included to indicate support.
 If present, the form would send its data as part of the body, for DELETE (or GET) requests;
 it would be ignored for all other methods.
 
-<h3 id=override-method>Override Method</h3>
+<h3 id=override-method>Override Method and Server-Side Polyfill</h3>
 <p>
 Currently, if <code>method</code> is set to an unrecognized method, the form will default to sending a GET form.
 If the author intended to send form data as body content, this has the regrettable side-effect of exposing that form data to the URL in the form of query parameters.
@@ -1199,13 +1199,30 @@ We propose <code>overridemethod</code> as the name for this method, but other na
 In this example, browsers that support PUT and <code>overridemethod</code> would issue a PUT request to the specified action, while browsers that do not support those features would issue a POST request (servers would have to support both methods, of course).
 This would ensure that URL data leakage never occurs on older browsers, while automatically "upgrading" to the new method as browsers get upgraded.
 
+<p>
+The existing <a href="https://github.com/alexpetros/triptych">Triptych polyfill</a> has the crucial caveat that client-side JavaScript is simply unable to modify navigation in the manner necessary to create the robust experience proposed here.
+The addition of a bridge attribute also enables a more robust polyfill, from the <em>server</em> side.
+
+<pre class="code">
+&lt;form action="/reservations/123" method="POST" overridemethod="PUT"&gt;
+  &lt;input type="hidden" name="_method" value="PUT"&gt;
+  &lt;input type="text" name="name"&gt;
+  &lt;button&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>
+While a bit clunky visually, this form builds on the existing method workarounds to create a smooth upgrade path.
+Servers that recognize the <section-ref ref="hidden-input-hack">hidden input hack</section-ref> can route matching POST methods to the PUT handler, while also handling PUT requests directly—and that one handler can return a 303 "See Other" redirect for both cases, which achieves the same thing regardless of whether the browser sent a POST or a PUT request.
+As browser support picks up and the need for a fallback diminishes, the hidden input and override can be removed in favor of a single <code>method=PUT</code>.
+
 <h2>Update History</h2>
 
 <dl>
   <dt> <time datetime="2024-08-26">August 26, 2024</time></dt>
   <dd>
     <ul>
-      <li>Added "Override Method" section
+      <li>Added "Override Method and Server-Side Polyfill" section
     </ul>
   </dd>
 </dl>
