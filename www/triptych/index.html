@@ -3,21 +3,54 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/resources/common.css">
 
+<style>
+table {
+  width: 90%;
+  margin: 30px auto;
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+th {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid black;
+}
+
+td {
+  padding: 10px;
+}
+
+time {
+  font-style: italic;
+}
+</style>
+
 <h1>Triptych Proposals</h1>
 
-Putting "hyper" back in the hypertext.
-
-<h2>Proposals</h2>
-
-<ol>
-  <li><a href="/triptych/form-http-methods">Support PUT, PATCH, and DELETE in HTML Forms</a> (<a href="https://github.com/whatwg/html/issues/3577#issuecomment-2294931398">issue tracker</a>)
-  <li>Button HTTP Requests
-  <li>Partial Page Replacement
-</ol>
-
 <p>
-The first proposal is out, the second two are still in progress.
-In the meantime, check out the <a href="https://github.com/alexpetros/triptych">Triptych Polyfill (on GitHub)</a>.
+Three small proposals for putting "hyper" back in the hypertext.
+</p>
+
+<table>
+  <tr>
+    <th>Proposal
+    <th>Issue Tracker
+  </tr>
+  <tr>
+    <td><a href="/triptych/form-http-methods">Support PUT, PATCH, and DELETE in HTML Forms</a>
+    <td><a href="https://github.com/whatwg/html/issues/3577#issuecomment-2294931398">Issue #3577</a>
+  </tr>
+ <tr>
+    <td>Button HTTP Requests
+    <td>Pending
+  </tr>
+  <tr>
+    <td>Partial Page Replacement
+    <td>Pending
+  </tr>
+</table>
+
 
 
 <h2>What is this?</h2>
@@ -30,8 +63,15 @@ If you are a practical person, you could say it brings the best of <a href="http
 <p>
 Basically, it should be easy to use HTML to declare page behavior that makes HTTP requests, and then tell the browser to either do a full-page navigation or replace part of the page with the response. Triptych enables this by bringing all the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods">HTTP methods</a> to HTML, giving buttons to ability to make requests without the help of a form, and making it possible to target a DOM subtree for replacement with the response.
 
-<h2>Is there a realistic chance any of this happens?</h2>
-Yes! See the issue tracker above.
+<p>
+See also: the <a href="https://github.com/alexpetros/triptych">Triptych Polyfill (on GitHub)</a>.
+
+<section>
+<h2>What progress have you made?</h2>
+<p><time datetime="2024-08-26">August 29, 2024</time> - Attended and received feedback from <a href="https://github.com/whatwg/html/issues/10574">WHANOT meeting</a>.
+
+<p><time datetime="2024-08-26">August 16, 2024</time> - Launched the <a href="./triptych/form-http-methods">first proposal</a>.
+</section>
 
 <h2>I ain't reading all that, is there a video?</h2>
 <p>
