@@ -191,6 +191,11 @@ If the response status code is not a redirection code (300-399), the browser sho
 of the response in the page, exactly the same way it would for the response of a POST form.
 It should likewise update the page URL and history.
 
+<p>
+Browsers should identically render the response content for all non-redirection codes;
+we do not propose any special behavior for codes like 201 (Created) or or 500 (Internal Server Error).
+This aligns with current browser behavior.
+
 <h3>Redirection</h3>
 <p>
 For PUT, PATCH, and DELETE requests, if the server responds with a 301, 302, or 307 status code, the browser should perform a subsequent request with the same HTTP method;
@@ -1152,6 +1157,51 @@ And most importantly, the purpose of the server is clear and legible to present 
 
 <h2>Alternatives and Additions</h2>
 
+<h3 id=custom-method>Custom Method Attribute</h3>
+
+<p>
+In addition to adding PUT, PATCH, and DELETE support to the <code>method</code> attribute, it makes a lot of sense to add another attribute, <code>custommethod</code>, that overrides the value in <code>method</code>:
+
+<pre class="code">
+&lt;form action="/reservations/123" method="POST" custommethod="PUT"&gt;
+  &lt;input type="text" name="name"&gt;
+  &lt;button&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>
+In this example, browsers that support PUT and <code>custommethod</code> would issue a PUT request to the specified action, while browsers that do not support those features would issue a POST request (servers would have to support both methods, of course).
+This solves the problem where existing browsers that do not recognize the value in <code>method</code> will fallback to a GET request, by allowing <code>method</code> to serve as a "best supported method" fallback, while <code>custommethod</code> explicitly denotes experimental behavior.<f-note>
+If the author intended to send form data as body content, this has the regrettable side-effect of exposing that form data to the URL in the form of query parameters.
+This could cause information leakage—URLs are visible in plaintext in various context where request content is not.
+As long as browser support for the new methods remains a live concern, the possibility of information leakage will hinder adoption in sensitive contexts.
+<br><br>
+Thanks to <a href="https://github.com/whatwg/html/issues/3577#issuecomment-2303573521">@jlunman</a> for asking us to address this issue.
+</f-note>
+
+<p>
+Another major advantage of the <code>custommethod</code> attribute is that it allows for a more robust polyfill mechanism.
+The existing <a href="https://github.com/alexpetros/triptych">Triptych polyfill</a> has the crucial caveat that client-side JavaScript cannot modify navigation in the manner necessary to create the robust experience proposed here.
+The addition of a bridge attribute enables a better, navigation-only polyfill, from the <em>server</em> side:
+
+<pre class="code">
+&lt;form action="/reservations/123" method="POST" custommethod="PUT"&gt;
+  &lt;input type="hidden" name="_method" value="PUT"&gt;
+  &lt;input type="text" name="name"&gt;
+  &lt;button&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+
+<p>
+While a bit clunky visually, this form builds on the existing method workarounds to create a smooth upgrade path.
+Servers that recognize the <section-ref ref="hidden-input-hack">hidden input hack</section-ref> can handle matching POST and PUT requests with the same handler function. That one handler can return a 303 "See Other" redirect for both cases, which achieves the same thing regardless of whether the browser sent a POST or a PUT request.
+As browser support picks up and the need for a fallback diminishes, the hidden input and override can be removed in favor of a single <code>method=PUT</code>.
+
+<p>
+We chose <code>custommethod</code> as the attribute name in anticipating that it will one day be used for proper custom HTTP method support, of the kind anticipated in <a href="https://www.w3.org/TR/form-http-extensions/#introduction">this working group note.</a>
+Eventually, it can be used for entirely arbitrary HTTP methods, while <code>method</code> is reserved for officially supported ones.
+In this manner, the upgrade/fallback mechanism proposed here can be re-used for future additions to HTTP's methods.
+
 <h3>Omit PATCH</h3>
 <p>
 PUT and DELETE are necessary to include a full CRUD grammar in HTML; PATCH is not.
@@ -1170,56 +1220,23 @@ A <code>usebody</code> attribute could be included to indicate support.
 If present, the form would send its data as part of the body, for DELETE (or GET) requests;
 it would be ignored for all other methods.
 
-<h3 id=override-method>Override Method and Server-Side Polyfill</h3>
-<p>
-Currently, if <code>method</code> is set to an unrecognized method, the form will default to sending a GET form.
-If the author intended to send form data as body content, this has the regrettable side-effect of exposing that form data to the URL in the form of query parameters.
-This could cause information leakage—URLs are visible in plaintext in various context where request content is not.
-As long as browser support for the new methods remains a live concern, the possibility of information leakage will hinder adoption in sensitive contexts.<f-note>
-Thanks to <a href="https://github.com/whatwg/html/issues/3577#issuecomment-2303573521">@jlunman</a> for asking us to address this issue.
-</f-note>
-
-<p>
-At the same time, it is important to keep in mind this proposal's goals, which include integrating seamlessly with existing form semantics, and do not include driving a fast adoption timeline.
-This proposal is primarily concerned with bolstering HTML's ability to support hypermedia APIs that last;
-if it takes a couple of years before these APIs have sufficient support, that's a cost worth paying in exchange for decades of having a more intuitive API.
-
-<p>
-All that having been said, one way to alleviate short-term adoption concerns is to introduce a second attribute that overrides <code>method</code>.
-We propose <code>overridemethod</code> as the name for this method, but other names could be suitable.
-
-<pre class="code">
-&lt;form action="/reservations/123" method="POST" overridemethod="PUT"&gt;
-  &lt;input type="text" name="name"&gt;
-  &lt;button&gt;Submit&lt;/button&gt;
-&lt;/form&gt;
-</pre>
-
-<p>
-In this example, browsers that support PUT and <code>overridemethod</code> would issue a PUT request to the specified action, while browsers that do not support those features would issue a POST request (servers would have to support both methods, of course).
-This would ensure that URL data leakage never occurs on older browsers, while automatically "upgrading" to the new method as browsers get upgraded.
-
-<p>
-The existing <a href="https://github.com/alexpetros/triptych">Triptych polyfill</a> has the crucial caveat that client-side JavaScript is simply unable to modify navigation in the manner necessary to create the robust experience proposed here.
-The addition of a bridge attribute also enables a more robust polyfill, from the <em>server</em> side.
-
-<pre class="code">
-&lt;form action="/reservations/123" method="POST" overridemethod="PUT"&gt;
-  &lt;input type="hidden" name="_method" value="PUT"&gt;
-  &lt;input type="text" name="name"&gt;
-  &lt;button&gt;Submit&lt;/button&gt;
-&lt;/form&gt;
-</pre>
-
-<p>
-While a bit clunky visually, this form builds on the existing method workarounds to create a smooth upgrade path.
-Servers that recognize the <section-ref ref="hidden-input-hack">hidden input hack</section-ref> can route matching POST methods to the PUT handler, while also handling PUT requests directly—and that one handler can return a 303 "See Other" redirect for both cases, which achieves the same thing regardless of whether the browser sent a POST or a PUT request.
-As browser support picks up and the need for a fallback diminishes, the hidden input and override can be removed in favor of a single <code>method=PUT</code>.
-
-<h2>Update History</h2>
+<h2 id=history>Update History</h2>
 
 <dl>
-  <dt> <time datetime="2024-08-26">August 26, 2024</time></dt>
+  <dt> <time datetime="2024-09-04">Sept 4, 2024</time></dt>
+  <dd>
+    <ul>
+      <li>Changed <code>overridemethod</code> to <code>custommethod</code>
+      <li>Added note about handling non-redirection codes identically
+    </ul>
+  </dd>
+  <dt> <time datetime="2024-08-29">Aug 29, 2024</time></dt>
+  <dd>
+    <ul>
+      <li>Attended <a href="https://github.com/whatwg/html/issues/10574#issuecomment-2318560972">WHATNOT meeting</a> and received feedback on proposal.
+    </ul>
+  </dd>
+  <dt> <time datetime="2024-08-26">Aug 26, 2024</time></dt>
   <dd>
     <ul>
       <li>Added "Override Method and Server-Side Polyfill" section
