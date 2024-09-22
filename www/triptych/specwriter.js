@@ -1,4 +1,3 @@
-// Create <section-ref> element
 class SectionRef extends HTMLElement {
   connectedCallback() {
     const content = this.innerHTML
@@ -8,7 +7,6 @@ class SectionRef extends HTMLElement {
 }
 customElements.define('section-ref', SectionRef)
 
-// Create <f-note> element
 class Footnote extends HTMLElement {
   static numFootnotes = 0
 
@@ -17,6 +15,9 @@ class Footnote extends HTMLElement {
 
     this.content = this.innerHTML
     this.num = Footnote.numFootnotes
+    if (!this.content && !this.hasAttribute('empty')) {
+      console.warn(`Footnote ${this.num} is empty. If this is is unexpected, make sure that the script was imported as a module. To silence this warning, supply the "empty" attribute`)
+    }
     this.innerHTML = `<sup id="fn-${this.num}"><a href="#ref-${this.num}">[${this.num}]</a></sup>`
   }
 
@@ -40,6 +41,9 @@ customElements.define('footnote-list', FootnoteList)
 
 class TableOfContents extends HTMLElement {
    connectedCallback() {
+     this.topLevel = this.getAttribute('highestlevel') || 2
+     this.depth = this.getAttribute('depth')
+
     // Create table of contents
     const headings = document.querySelectorAll('h2,h3')
     const topList = document.createElement('ol')
