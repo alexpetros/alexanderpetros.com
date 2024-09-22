@@ -3,6 +3,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script type=module>
+import { Footnote, TableOfContents } from './custom-elements.js'
+Footnote.initialize('section.footnotes')
+TableOfContents.initialize('details.toc')
+</script>
+
 <link rel="stylesheet" href="./proposal.css">
 
 <h1>Support PUT, PATCH, and DELETE in HTML Forms</h1>
@@ -1248,10 +1254,3 @@ it would be ignored for all other methods.
 <section class=footnotes>
 <h2>Footnotes</h2>
 </section>
-
-<!-- These have to be at the bottom (for now) -->
-<script src="./custom-elements.js"></script>
-<script>
-Footnote.initialize('section.footnotes')
-TableOfContents.initialize('details.toc')
-</script>

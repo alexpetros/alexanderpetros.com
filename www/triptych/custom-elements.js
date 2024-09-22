@@ -1,5 +1,5 @@
 // Create <section-ref> element
-class SectionRef extends HTMLElement {
+export class SectionRef extends HTMLElement {
   connectedCallback() {
     const content = this.innerHTML
     const ref = this.attributes.ref.value
@@ -9,7 +9,7 @@ class SectionRef extends HTMLElement {
 customElements.define('section-ref', SectionRef)
 
 // Create <f-note> element
-class Footnote extends HTMLElement {
+export class Footnote extends HTMLElement {
   static numFootnotes = 0
 
   connectedCallback() {
@@ -17,7 +17,6 @@ class Footnote extends HTMLElement {
 
     this.content = this.innerHTML
     this.num = Footnote.numFootnotes
-    console.log(this.innerHTML)
     this.innerHTML = `<sup id="fn-${this.num}"><a href="#ref-${this.num}">[${this.num}]</a></sup>`
   }
 
@@ -36,7 +35,7 @@ class Footnote extends HTMLElement {
 }
 customElements.define('f-note', Footnote)
 
-class TableOfContents {
+export class TableOfContents {
   static initialize(selector) {
     // Create table of contents
     const toc = document.querySelector(selector)
