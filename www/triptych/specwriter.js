@@ -1,5 +1,5 @@
 // Create <section-ref> element
-export class SectionRef extends HTMLElement {
+class SectionRef extends HTMLElement {
   connectedCallback() {
     const content = this.innerHTML
     const ref = this.attributes.ref.value
@@ -9,7 +9,7 @@ export class SectionRef extends HTMLElement {
 customElements.define('section-ref', SectionRef)
 
 // Create <f-note> element
-export class Footnote extends HTMLElement {
+class Footnote extends HTMLElement {
   static numFootnotes = 0
 
   connectedCallback() {
@@ -20,25 +20,27 @@ export class Footnote extends HTMLElement {
     this.innerHTML = `<sup id="fn-${this.num}"><a href="#ref-${this.num}">[${this.num}]</a></sup>`
   }
 
-  static initialize(selector) {
-    // Create footnotes section
-    const footnotesSection = document.querySelector(selector)
+}
+customElements.define('f-note', Footnote)
+
+class FootnoteList extends HTMLElement {
+  connectedCallback() {
+    // const template = document.createElement('template')
     const footnotes = document.querySelectorAll('f-note')
     for (const footnote of footnotes) {
       const p = document.createElement('p')
       p.classList.add('footnote')
       p.id = `ref-${footnote.num}`
       p.innerHTML = `[${footnote.num}] ${footnote.content} <a href="#fn-${footnote.num}">↩</a>`
-      footnotesSection.append(p)
+      this.append(p)
     }
   }
 }
-customElements.define('f-note', Footnote)
+customElements.define('footnote-list', FootnoteList)
 
-export class TableOfContents {
-  static initialize(selector) {
+class TableOfContents extends HTMLElement {
+   connectedCallback() {
     // Create table of contents
-    const toc = document.querySelector(selector)
     const headings = document.querySelectorAll('h2,h3')
     const topList = document.createElement('ol')
     let currentH2
@@ -56,7 +58,7 @@ export class TableOfContents {
         h2Sublist.append(h3Item)
       }
     }
-    toc.append(topList)
+    this.append(topList)
   }
 }
-
+customElements.define('table-of-contents', TableOfContents)
