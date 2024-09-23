@@ -28,7 +28,14 @@ BEGIN {
 NR > 1 {
   section = "<section>\n<h2>" $2 " (" $3 ") </h2>\n<p>\n"
   section = section "<dl>"
-  section = section "<dt>Rating<dd>" $5 "\n"
+
+  rating = ""
+  for (i = 1; i <= $5; i++) {
+    rating = rating "&starf;"
+  }
+  if ($5 - i == -.5) rating = rating "½"
+  section = section "<dt>Rating<dd>" rating "\n"
+
   section = section "<dt>Watched<dd>" $9 "\n"
   if ($8) {
     section = section "<dt>Tags<dd>" $8 "\n"
