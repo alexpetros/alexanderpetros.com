@@ -27,11 +27,16 @@ BEGIN {
 # Skip the first row, which is the header definitions
 NR > 1 {
   section = "<section>\n<h2>" $2 " (" $3 ") </h2>\n<p>\n"
-  section = section "<b>Rating:</b> " $5 "\n<br>\n"
-  section = section "<b>Watched:</b> " $9 "\n"
+  section = section "<dl>"
+  section = section "<dt>Rating<dd>" $5 "\n"
+  section = section "<dt>Watched<dd>" $9 "\n"
+  if ($8) {
+    section = section "<dt>Tags<dd>" $8 "\n"
+  }
+  section = section "</dl>"
   review = $7
   gsub(/\n\n/, "<p>", review)
-  section = section "<p>\n" review "\n<section>\n"
+  section = section "<p>\n" review "\n</section>\n"
 
   # Load each review into an array.
   # It would be nice to do this with O(1) space usage,
@@ -44,6 +49,11 @@ END {
   print "<html lang=en>"
   print "<meta charset=UTF-8>"
   print "<title>Letterboxd Reviews</title>"
+  print "<style>"
+  print "dl { display: grid; grid-template-columns: max-content 1fr }"
+  print "dt { font-weight: bold; &::after { content: \":\" }}"
+  print "</style>"
+
   print "<h1>Letterboxd Reviews</h1>"
 
   # Print the reviews in reverse-chronological order
