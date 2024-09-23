@@ -42,6 +42,7 @@ NR > 1 {
 END {
   print "<!DOCTYPE html>"
   print "<html lang=en>"
+  print "<meta charset=UTF-8>"
   print "<title>Letterboxd Reviews</title>"
   print "<h1>Letterboxd Reviews</h1>"
 
