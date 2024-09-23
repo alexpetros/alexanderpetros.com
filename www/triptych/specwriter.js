@@ -1,3 +1,8 @@
+/**
+ * specwriter.js - a few useful components for writing HTML forms
+ * Author: Alexander Petros
+ * Created: Sept 22, 2014
+ */
 class SectionRef extends HTMLElement {
   connectedCallback() {
     const content = this.innerHTML
