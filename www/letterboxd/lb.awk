@@ -57,6 +57,8 @@ END {
   print "</style>"
 
   print "<h1>Letterboxd Reviews</h1>"
+  print "<p>Generated from <a href=https://letterboxd.com/apetros>my letterboxd</a> with <a href=https://alexanderpetros.com/letterboxd/lb.awk>lb.awk</a>."
+  print "<p>Last Updated: " strftime("%b %d, %Y")
 
   # Print the reviews in reverse-chronological order
   for (i = NR; i > 1; i--) {
