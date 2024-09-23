@@ -27,7 +27,7 @@ BEGIN {
 # Skip the first row, which is the header definitions
 NR > 1 {
   section = "<section>\n<h2>" $2 " (" $3 ") </h2>\n<p>\n"
-  section = section "<dl>"
+  section = section "<dl>\n"
 
   rating = ""
   for (i = 1; i <= $5; i++) {
@@ -55,6 +55,7 @@ END {
   print "<!DOCTYPE html>"
   print "<html lang=en>"
   print "<meta charset=UTF-8>"
+  print "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
   print "<title>Letterboxd Reviews</title>"
   print "<style>"
   print "html { line-height: 1.4; font-size: 18px; }"
