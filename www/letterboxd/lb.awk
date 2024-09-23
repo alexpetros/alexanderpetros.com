@@ -2,7 +2,7 @@
 # Author: Alexander Petros
 #
 # This script processes the reviews.csv file.
-# You can download  that file (as of this writing) at: https://letterboxd.com/settings/data/
+# You can download that file (as of this writing) at: https://letterboxd.com/settings/data/
 #
 # Expects GNU awk (gawk) --csv mode
 #
@@ -50,6 +50,8 @@ END {
   print "<meta charset=UTF-8>"
   print "<title>Letterboxd Reviews</title>"
   print "<style>"
+  print "html { line-height: 1.4; font-size: 18px; }"
+  print "body { max-width: 800px; margin: 0 auto; padding: 0 10px; }"
   print "dl { display: grid; grid-template-columns: max-content 1fr }"
   print "dt { font-weight: bold; &::after { content: \":\" }}"
   print "</style>"
