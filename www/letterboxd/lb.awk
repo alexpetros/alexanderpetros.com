@@ -26,9 +26,9 @@ BEGIN {
 
 # Skip the first row, which is the header definitions
 NR > 1 {
-  section = "<section>\n<h2>" $2 " (" $3 ") </h2>\n"
-  section = section "Rating: " $5 "\n<br>\n"
-  section = section "Watched: " $9 "\n"
+  section = "<section>\n<h2>" $2 " (" $3 ") </h2>\n<p>\n"
+  section = section "<b>Rating:</b> " $5 "\n<br>\n"
+  section = section "<b>Watched:</b> " $9 "\n"
   review = $7
   gsub(/\n\n/, "<p>", review)
   section = section "<p>\n" review "\n<section>\n"
