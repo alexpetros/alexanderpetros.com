@@ -1,4 +1,5 @@
 PROJECT_ROOT=www
+LB_ROOT=www/letterboxd
 
 .PHONY: dev
 dev:
@@ -8,6 +9,6 @@ dev:
 validate:
 	vnu --skip-non-html --also-check-css html
 
-.PHONY: rss
-rss:
-	./scripts/generate-rss.sh > html/rss.xml
+.PHONY: lb
+lb:
+	cat $(LB_ROOT)/reviews.csv | gawk --csv -f $(LB_ROOT)/lb.awk > $(LB_ROOT)/index.html
