@@ -29,10 +29,12 @@ NR > 1 {
   section = "<section>\n<h2>" $2 " (" $3 ") </h2>\n<p>\n"
   section = section "<dl>\n"
 
+  # Convert the rating into stars
   rating = ""
   for (i = 1; i <= $5; i++) {
     rating = rating "&starf;"
   }
+  # Add a half-star if there is one
   if ($5 - i == -.5) rating = rating "½"
   section = section "<dt>Rating<dd>" rating "\n"
 
@@ -41,17 +43,20 @@ NR > 1 {
     section = section "<dt>Tags<dd>" $8 "\n"
   }
   section = section "</dl>"
+
+  # Add <p> tags to all the blank lines in the review
   review = $7
   gsub(/\n\n/, "<p>", review)
   section = section "<p>\n" review "\n</section>\n"
 
-  # Load each review into an array.
+  # Load each review (section) into an array.
   # It would be nice to do this with O(1) space usage,
   # but reversing the order properly is actually a bit tricky
   sections[NR] = section
 }
 
 END {
+  # Print out all the webpage header stuff
   print "<!DOCTYPE html>"
   print "<html lang=en>"
   print "<meta charset=UTF-8>"
