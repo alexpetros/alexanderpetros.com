@@ -1,6 +1,7 @@
 :root {
   --page-background: white;
   --header-color: #039;
+  --highlight-color: yellow;
 }
 
 html {
@@ -49,7 +50,6 @@ h4::before {
   content: counter(header-count) '.' counter(subheader-count) '.' counter(subsubheader-count) '. '
 }
 
-
 dt {
   font-weight: bold;
 }
@@ -80,30 +80,11 @@ summary:hover {
   background-color: lightgray;
 }
 
-.toc ol {
-  counter-reset: toc-count;
-  list-style-type: none;
-}
-
-.toc ol li::before {
-  counter-increment: toc-count;
-  content: counters(toc-count, '.', decimal) '. ';
-}
-
 pre.code {
   font-family: Monospace;
   overflow: auto;
   background-color: lightgray;
   padding: 10px;
-}
-
-p.footnote {
-  background-color: var(--page-background);
-  padding: 5px 0;
-}
-
-p.footnote:target {
-  background-color: yellow;
 }
 
 table {
@@ -126,3 +107,29 @@ div.notice {
   background-color: bisque;
   padding: 1rem;
 }
+
+/* specwriter */
+p.footnote {
+  background-color: var(--page-background);
+  padding: 5px 0;
+}
+
+p.footnote:target {
+  background-color: var(--highlight-color);
+}
+
+/* slightly crude hack to differentiate the footnotes from regular text in noscript environments */
+f-note:not(:has(sup)) {
+  background-color: var(--highlight-color);
+}
+
+.toc ol {
+  counter-reset: toc-count;
+  list-style-type: none;
+}
+
+.toc ol li::before {
+  counter-increment: toc-count;
+  content: counters(toc-count, '.', decimal) '. ';
+}
+
