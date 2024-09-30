@@ -1,5 +1,5 @@
 /**
- * specwriter.js - a few useful components for writing HTML forms
+ * specwriter.js - a few useful components for writing HTML specs
  * Author: Alexander Petros
  * Created: Sept 22, 2014
  */
