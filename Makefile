@@ -15,4 +15,5 @@ lb:
 
 .PHONY: deploy
 deploy:
+	git push
 	ssh mrg 'cd /var/www/alexanderpetros.com && git pull'
