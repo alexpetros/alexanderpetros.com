@@ -61,7 +61,7 @@ Three small proposals for putting the "hyper" back in hypertext.
   </tr>
  <tr>
     <td>Button HTTP Requests
-    <td>Pending
+    <td>Est. January 2025
   </tr>
   <tr>
     <td>Partial Page Replacement
@@ -75,10 +75,12 @@ Three small proposals for putting the "hyper" back in hypertext.
 Triptych is three simple proposals that make HTML much more expressive in how it can make and handle network requests.
 
 <p>
-If you are a practical person, you could say it brings the best of <a href="https://htmx.org/">htmx</a> (and other attributed-based page replacement libraries, like <a href="https://turbo.hotwired.dev/">turbo</a> and <a href="https://unpoly.com/">unpoly</a>) to HTML. For the more theoretically-inclined, it <a href="/triptych/form-http-methods#completing-rest">completes</a> HTML's ability to do Representational State Transfer (REST) by making it a sufficient <a href="https://htmx.org/essays/hateoas/">self-describing representation</a> for a much wider variety of problem spaces.
+If you are a practical person, you could say it brings the best of <a href="https://htmx.org/">htmx</a> (and other attributed-based page replacement libraries, like <a href="https://turbo.hotwired.dev/">turbo</a> and <a href="https://unpoly.com/">unpoly</a>) to HTML.
+For the more theoretically-inclined, it <a href="/triptych/form-http-methods#completing-rest">completes</a> HTML's ability to do Representational State Transfer (REST) by making it a sufficient <a href="https://htmx.org/essays/hateoas/">self-describing representation</a> for a much wider variety of problem spaces.
 
 <p>
-Basically, it should be easy to use HTML to declare page behavior that makes HTTP requests, and then tell the browser to either do a full-page navigation or replace part of the page with the response. Triptych enables this by bringing all the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods">HTTP methods</a> to HTML, giving buttons to ability to make requests without the help of a form, and making it possible to target a DOM subtree for replacement with the response.
+Basically, it should be easy to use HTML to declare page behavior that makes HTTP requests, and then tell the browser to either do a full-page navigation or replace part of the page with the response.
+Triptych enables this by bringing all the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods">HTTP methods</a> to HTML, giving buttons to ability to make requests without the help of a form, and making it possible to target a DOM subtree for replacement with the response.
 
 <p>
 I first outlined these proposals in <a href="https://unplannedobsolescence.com/blog/life-and-death-of-htmx/">The Life & Death of htmx</a> at Big Sky Dev Con.
@@ -89,13 +91,18 @@ See also: the <a href="https://github.com/alexpetros/triptych">Triptych Polyfill
 
 <section>
 <h2 id=status>Status</h2>
-<p><a href="https://github.com/whatwg/fetch/pull/1785">Published an update</a> to the fetch spec that's required to get CORS support in navigation (and therefore forms).
+<p>
+<a href="https://github.com/whatwg/fetch/pull/1785">Published an update</a> to the fetch spec that's required to get CORS support in navigation (and therefore forms).
 
-<p>Working on the required changes to the navigation spec (unlike the fetch spec PR, this will be more than a two-word change).
+<p>
+Working on the required changes to the navigation spec.
 
-<p>For a full history of changes to the Forms proposal, see <a href="/triptych/form-http-methods#history">the updates section</a>.
+<p>
+For a full history of changes to the Forms proposal, see <a href="/triptych/form-http-methods#history">the updates section</a>.
 
-<p style="font-style: italic">Last Updated: Nov 10, 2024
+<p style="font-style: italic">
+Last Updated: Nov 10, 2024
+
 </section>
 
 <section>
