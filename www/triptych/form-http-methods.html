@@ -216,14 +216,13 @@ For instance, <a
 and <a href="https://stackoverflow.com/questions/71975005/rails-not-redirecting-on-put-request-sending-406-back-instead">Rails</a>.
 </f-note>
 This resolves a blocker for the original Firefox beta implementation.<f-note>
-On 01/12/2011, at 9:57 PM,
-<a href="https://lists.w3.org/Archives/Public/public-html-comments/2011Apr/0000.html">
-Julian Reschke wrote:</a>
-<q>One thing I forgot earlier, and which was the reason why I actually wanted PUT and DELETE
-temporarily (!) on hold is redirect handling. The experimental Firefox implementation was copying
-the redirect handling for POST (with respect to method rewriting), and it would have been bad to let this get into the deployed platform.
-The experimental Firefox implementation was copying the redirect.
-So it would be good to clarify that PUT and DELETE, when being redirected by 301/302 should *not* be rewritten to GET.</q>
+On Sat, 02 Apr 2011,
+<a href="https://lists.w3.org/Archives/Public/public-html-comments/2011Apr/0008.html">
+Julian Reschke writes:</a>
+<q>In the meantime I recalled the main reason why I got nervous about what
+the FF4 beta implemented; it adopted the broken XHR behavior for
+following redirects (rewriting the request method to GET), and it also
+had the URI encoding for one of the methods wrong.</q>
 </f-note>
 
 <p>
