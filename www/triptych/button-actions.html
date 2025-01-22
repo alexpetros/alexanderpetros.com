@@ -43,9 +43,9 @@ Proposal 2/3 in the <a href="https://alexanderpetros.com/triptych/">Triptych Pro
 
 <h3>Goals</h3>
 <ul>
-  <li>Enhance the button's ability to describe networked interactivity
+  <li>Make buttons more useful
   <li>Encourage semantic use of buttons by giving them interactive capabilities that other elements lack
-  <li>Expand HTML's ability to describe network requests (declaratively)
+  <li>Expand HTML's ability to describe network requests declaratively
 </ul>
 
 </section>
@@ -60,7 +60,14 @@ New attributes for the button:
  <li><code>method</code> - the HTTP method to make the request with
 </ul>
 
-These attributes re-use the grammar and functionality of the form element.
+<p>
+When the <code>action</code> attribute is specified, clicking the button issues an HTTP request to the specified URL.
+The <code>method</code> attribute can be used to change the HTTP method of the request; it defaults to GET if not specified.
+
+<p>
+When a button with the <code>action</code> attribute is included inside a form, <strong>it does not submit the form</strong>.
+Instead, it makes the request without submitting additional data, as if there had been no form at all.
+
 </section>
 
 
