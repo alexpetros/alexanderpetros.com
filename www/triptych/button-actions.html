@@ -258,9 +258,14 @@ In the future, this attribute could include arbitrary custom methods as well.
 </f-note>
 
 <p>
-Buttons can issue requests if they are <code>type=submit</code>, the default button type.
+Buttons can issue requests if they are <code>type=submit</code>, the default button type.<f-note>
+<code>submit</code> is a mildly regrettable name in this context, as it is not typically used outside the context of a form (one does not really "submit" a link navigation).
+It is far more important, however, that the button actions work with the default <code>type</code>, which is and always will be <code>submit</code>, than it is to have a better name for that functionality.
+Besides, it's far from the most confusing default name in HTML.
+</f-note>
 This is done to both simplify the interface, and align with author expectations that a button with <code>type=submit</code> (or no type specified) is capable of making requests.<f-note>
 This document uses the term "author" in the same way that the <a href="https://www.w3.org/TR/html-design-principles/">HTML Design Principles</a> do, to mean the person writing the HTML.
+</f-note>
 
 <p>
 Buttons that have any other <code>type</code> attribute should ignore the <code>method</code> and <code>action</code> attributes.
