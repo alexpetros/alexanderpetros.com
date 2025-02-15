@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss
+  version="2.0"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>TPL Recap Pod</title>
+    <link>https://alexanderpetros.com/tpl/recap-pod/rss.xml</link>
+    <language>en-us</language>
+    <copyright>&#169; 2025 Alexander Petros</copyright>
+
+    <itunes:author>Alexander Petros</itunes:author>
+    <itunes:email>contact@alexpetros.com</itunes:email>
+
+    <description>
+      A podcast about the TPL Pokemon Draft League intended for an audience that might, but is
+      not likely to, exceed twelve.
+    </description>
+    <itunes:image href="https://alexanderpetros.com/www/tpl/recap-pod/tpl-cover.png" />
+
+    <itunes:category text="Games &amp; Hobbies">
+      <itunes:category text="Video Games" />
+    </itunes:category>
+
+    <itunes:explicit>false</itunes:explicit>
+
+    <item>
+      <itunes:title>S5 W5 Recap, Kevin Interview</itunes:title>
+      <description>
+        Pilot Episode. Standings after week 5. Kevin apologizes for Destiny Bond, Memento, Flame Orb
+        Mismagius, and explains how he pulled off the week's biggest upset.
+      </description>
+      <enclosure
+        length="10077240"
+        type="audio/mpeg"
+        url="https://alexanderpetros.com/tpl/recap-pod/episodes/01-tpl-recap-pod.mp3"
+      />
+      <guid>2E9AA475-B0B9-420C-A795-BE29D4B6372A</guid>
+      <pubDate>Friday, 14 Jan 2025 23:00:00 GMT</pubDate>
+      <itunes:duration>11:20</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+
+  </channel>
+</rss>
