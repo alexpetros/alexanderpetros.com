@@ -6,7 +6,7 @@
   xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>TPL Recap Pod</title>
-    <link>https://alexanderpetros.com/tpl/recap-pod/rss.xml</link>
+    <link>https://alexanderpetros.com/tpl/recap-pod/</link>
     <language>en-us</language>
     <copyright>&#169; 2025 Alexander Petros</copyright>
 
@@ -14,8 +14,8 @@
     <itunes:email>contact@alexpetros.com</itunes:email>
 
     <description>
-      A podcast about the TPL Pokemon Draft League intended for an audience that might, but is
-      not likely to, exceed twelve.
+      A podcast about the TPL Pokemon Draft League intended for an audience that might, but is not
+      likely to, exceed twelve.
     </description>
     <itunes:image href="https://alexanderpetros.com/tpl/recap-pod/tpl-cover.png" />
 
@@ -28,9 +28,22 @@
     <item>
       <itunes:title>S5 W5 Recap, Kevin Interview</itunes:title>
       <description>
-        Pilot Episode. Standings after week 5. Kevin apologizes for Destiny Bond, Memento, Flame Orb
-        Mismagius, and explains how he pulled off the week's biggest upset.
+        Pilot Episode. Standings after week 5. Kevin apologizes for Destiny Bond/Memento/Trick Flame
+        Orb Mismagius, and explains how he pulled off the week's biggest upset.
       </description>
+      <content:encoded>
+        <![CDATA[
+        <p>
+        Pilot Episode. Standings after week 5. Kevin apologizes for Destiny Bond/Memento/Trick Flame
+        Orb Mismagius, and explains how he pulled off the week's biggest upset.
+
+        <p>Links:
+        <ul>
+          <li><a href="https://replay.pokemonshowdown.com/gen9draft-2293309836">W4 Kevin vs Nic - Showdown</a>
+          <li><a href="https://replay.pokemonshowdown.com/gen9ubers-2297168306">W5 Kevin vs Kirk - Showdown</a>
+        </ul>
+        ]]>
+      </content:encoded>
       <enclosure
         length="10077240"
         type="audio/mpeg"
