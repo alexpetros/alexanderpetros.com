@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Verdana, Sans-Serif;
+  max-width: 800px;
+  margin: 0 auto;
+}
+</style>
+
+<h1>TPL RECAP POD</h1>
+
+<p>
+<img src="./tpl-cover.png" alt="An image of shiny quagsire with the words 'The Pokemon League Recap Pod'">
+
+<p>
+Add
+<a href="https//alexanderpetros.com/www/tpl/recap-pod.xml">https//alexanderpetros.com/www/tpl/recap-pod.xml</a> to your feed reader.
+
+<p>
+<button
+    onclick="copyToClipboard()"
+    data-contents="https://alexanderpetros.com/www/tpl/recap-pod.xml"
+    >Click to Copy
+</button>
+
+
+<h2>Episodes</h2>
+
+<ul>
+  <li>
+    S5 W5 Recap, Kevin Interview <a href="./episodes/01-tpl-recap-pod.mp3">(mp3)</a>
+</ul>
+
+<script>
+function copyToClipboard() {
+  const button = event.target
+  const text = button.innerText
+  const contents = button.getAttribute('data-contents')
+  navigator.clipboard.writeText(contents)
+  button.disabled = true
+  button.innerText = 'Copied!'
+
+  this.setTimeout(() => {
+    button.disabled = false
+    button.innerText = text
+  }, 1000)
+}
+</script>
+
