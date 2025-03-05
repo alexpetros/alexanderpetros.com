@@ -7,6 +7,8 @@
   <channel>
     <title>TPL Recap Pod</title>
     <link>https://alexanderpetros.com/tpl/recap-pod/</link>
+    <atom:link href="https://alexanderpetros.com/tpl/recap-pod.xml" rel="self" type="application/rss+xml">
+
     <language>en-us</language>
     <copyright>&#169; 2025 Alexander Petros</copyright>
 
@@ -19,14 +21,15 @@
     </description>
     <itunes:image href="https://alexanderpetros.com/tpl/recap-pod/tpl-cover.png" />
 
-    <itunes:category text="Games &amp; Hobbies">
+    <itunes:category text="Leisure">
       <itunes:category text="Video Games" />
     </itunes:category>
 
     <itunes:explicit>false</itunes:explicit>
 
     <item>
-      <itunes:title>S5 W5 Recap, Kevin Interview</itunes:title>
+      <title>S5 W5 Recap, Kevin Interview</title>
+
       <description>
         Pilot Episode. Standings after week 5. Kevin apologizes for Will-O-Wisp/Destiny
         Bond/Memento/Trick Flame Orb Mismagius, and explains how he pulled off the week's biggest
@@ -58,7 +61,8 @@
     </item>
 
     <item>
-      <itunes:title>S5 W6 Recap, Mason Interview</itunes:title>
+      <title>S5 W6 Recap, Mason Interview</title>
+
       <description>
         Standings after week 6. Mason clarifies the importance of Klawf, talks about his proudest
         win of the season, and forecasts the road ahead for the league's most likely playoff
