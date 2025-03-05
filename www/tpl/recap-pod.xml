@@ -7,7 +7,7 @@
   <channel>
     <title>TPL Recap Pod</title>
     <link>https://alexanderpetros.com/tpl/recap-pod/</link>
-    <atom:link href="https://alexanderpetros.com/tpl/recap-pod.xml" rel="self" type="application/rss+xml">
+    <atom:link href="https://alexanderpetros.com/tpl/recap-pod.xml" rel="self" type="application/rss+xml"/>
 
     <language>en-us</language>
     <copyright>&#169; 2025 Alexander Petros</copyright>
