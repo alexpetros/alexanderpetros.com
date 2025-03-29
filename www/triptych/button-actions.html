@@ -253,7 +253,7 @@ One might be tempted to do the same with a GET request, like so:
 But this results in a request to <code>/cancel?</code>, with an extraneous query parameter, which is incorrect.
 
 <p>
-Nor this technique cannot be used <em>within</em> forms, for any method.
+This technique also cannot be used <em>within</em> forms, for any method.
 Consider how you might implement <section-ref ref="multi-action-pages">the Multi-Action Pages example</section-ref> with currently-existing native HTML controls:<f-note>Although still assuming <a href="/triptych/form-http-methods">PUT, PATCH, and DELETE support</a>; absent those it's even less clear, because you have to use make both "Save Draft" and "Delete Draft" POSTs, and <a href="/triptych/form-http-methods#ad-hoc-uri-semantics">change the "Delete Draft" URL</a> to something like <code>/draft/123/delete</code>.</f-note>
 
 <pre class=code>
