@@ -3,11 +3,12 @@
   version="2.0"
   xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
   xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:podcast="https://podcastindex.org/namespace/1.0"
   xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>TPL Recap Pod</title>
     <link>https://alexanderpetros.com/tpl/recap-pod/</link>
-    <atom:link href="https://alexanderpetros.com/tpl/recap-pod.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="https://alexanderpetros.com/tpl/recap-pod.xml" rel="self" type="application/rss+xml" />
 
     <language>en-us</language>
     <copyright>&#169; 2025 Alexander Petros</copyright>
@@ -90,6 +91,50 @@
       <guid>B8C156BF-A1D1-4C19-B0DB-49D82DEF3416</guid>
       <pubDate>Saturday, 1 Mar 2025 06:00:00 GMT</pubDate>
       <itunes:duration>12:50</itunes:duration>
+      <itunes:explicit>true</itunes:explicit>
+    </item>
+
+    <item>
+      <title>S5 Trades, with Mason and Justin</title>
+
+      <description>
+        Alex, Mason, and Justin sit down to discuss everyone's trades right before the Week 7
+        deadline.
+      </description>
+      <content:encoded>
+        <![CDATA[
+        <p>
+          Alex, Mason, and Justin sit down to discuss everyone's trades right before the Week 7
+          deadline.
+        </p>
+
+        <h2 id="trades">Trades</h2>
+        <table>
+          <tr> <th>GM</th> <th>Dropped</th> <th>Acquired</th> </tr>
+          <tbody>
+            <tr> <td>Zack</td> <td>Iron Moth, Ogerpon-Wellspring, Brambleghast, Beartic</td> <td>Baxcalibur, Thundurus, Scizor</td> </tr>
+            <tr> <td>George</td> <td>Klefki, Toxicroak, Bisharp</td> <td>Blastoise, Barraskewda</td> </tr>
+            <tr> <td>Pat</td> <td>Shaymin, Alolan-Persian, Eiscue, Swampert</td> <td>Inteleon, Ogerpon-Cornerstone, Quagsire</td> </tr>
+            <tr> <td>Alex</td> <td>Spidops, Primeape</td> <td>Vikavolt</td> </tr>
+            <tr> <td>Bird</td> <td>Dusclops, Politoed, Kingdra</td> <td>Forretress, Toxapex, Bastiodon</td> </tr>
+            <tr> <td>Morry</td> <td>Landorus-I, Mabosstiff, Haunter</td> <td>Latios, Sableye, Ariados</td> </tr>
+            <tr> <td>Sean</td> <td>Zoroark-H</td> <td>Pecharunt</td> </tr>
+            <tr> <td>Zack</td> <td>Cryogonal</td> <td>Tauros-Paldea-Combat</td> </tr>
+            <tr> <td>Justin</td> <td>Enamorus-T</td> <td>Mimikyu, Primeape</td> </tr>
+            <tr> <td>Mason</td> <td>Ambipom, Scyther</td> <td>Skeledirge</td> </tr>
+            <tr> <td>Kevin</td> <td>Lokix, Fezandipity</td> <td>Azelf, Virizion</td> </tr>
+          </tbody>
+        </table>
+        ]]>
+      </content:encoded>
+      <enclosure
+        length="41510472"
+        type="audio/mpeg"
+        url="https://alexanderpetros.com/tpl/recap-pod/episodes/03-tpl-recap-pod.mp3"
+      />
+      <guid>409CF2EE-EA96-4101-8C59-758E5AFEFE3D</guid>
+      <pubDate>Mon Mar 31 00:02:24 EDT 2025</pubDate>
+      <itunes:duration>57:54</itunes:duration>
       <itunes:explicit>true</itunes:explicit>
     </item>
 
